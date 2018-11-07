@@ -1,0 +1,311 @@
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Vanilla Fix for SharePoint: Form Customisation
+http://vanillafix.com
+
+Site: [Name of Site]
+List: [Name of List or Library]
+
+Form Customisation Release: YYMMDD
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!-- Load required libraries and styles; ### ENSURE CORRECT PATHS!! ### -->
+<script src="../../SiteAssets/jquery-3.3.1.min.js"></script>
+<script src="../../SiteAssets/vf-sp.js"></script>
+<link rel="stylesheet" href="../../SiteAssets/vf-sp-styles.css" />
+
+<!-- Execute list-specific routines. -->
+<script>
+
+  /**
+   * Set list-specific global variables (note that double-underscore global
+   * variables are found in vf-sp.js).
+   */
+  var _checkingForPulse=true; // Set to false after initial testing.
+  var _messageFirstTimeTesting="Vanilla Fix is in place."
+  +" Now set _firstTimeTesting to false and get on with customisation.";
+  var _isCustomLayoutUsed=false; // Set to false if no custom layout is used.
+  var _itemID=""; // This will be made known on DispForm and EditForm.
+  var _labelTitle="Title"; // See Note 1.
+  var _labelListField2="Second Field in List"; // See Note 1.
+  var _labelListField3="Third Field in List"; // See Note 1.
+  var _labelListField4="Fourth Field in List"; // See Note 1.
+  var _itemTitle=""; // See Note 2.
+  var _userSetTitle=""; // See Note 3.
+
+  /**
+   * [Function] Prepare form elements for view mode. This function is designed
+   * to run once per page load.
+   */
+  function definePresentationLogicForViewMode() {
+
+    /**
+     * Example:
+     */
+    //jQuery(__field+"('"+_labelTitle+"')").closest("tr").hide();
+
+  } // end of function definePresentationLogicForViewMode()
+
+  /**
+   * [Function] Prepare form elements for edit mode. This function is designed
+   * to run once per page load.
+   */
+  function definePresentationLogicForEditMode() {
+
+    /**
+     * Example:
+     */
+    //jQuery(__field+"('"+_labelListField2+"')").closest("tr").hide();
+
+  } // end of function definePresentationLogicForEditMode()
+
+  /**
+   * [Function] Conditionally show and hide fields. This function applies to
+   * edit mode only, and may be triggered multiple times as user input changes.
+   */
+  function conditionallyShowAndHideFields() {
+
+    /**
+     * Example:
+     */
+    //if (jQuery("input[title='"+_labelListField2+"']").val()=="") {
+    //  jQuery("span[id^='formListField3']").show();
+    //} else jQuery("span[id^='formListField3']").hide();
+
+  } // end of function conditionallyShowAndHideFields()
+
+  /**
+   * [Function] Initialise form elements. This function is triggered once per
+   * page load.
+   */
+  function initialiseForm() {
+
+    /**
+     * Determine __formMode.
+     */
+    if (__currentURL.indexOf("DispForm.aspx")>=0) __formMode=0;
+    else if (__currentURL.indexOf("NewForm.aspx")>=0) __formMode=1;
+    else if (__currentURL.indexOf("EditForm.aspx")>=0) __formMode=2;
+
+    /**
+     * Control the visibility of edit mode-only elements.
+     */
+    jQuery(".editMode").hide();
+    if (__formMode>=1) jQuery(".editMode").show();
+
+    /**
+     * On DispForm and EditForm, read in the item's internal ID in case it
+     * needs to be readily available to the user.
+     */
+    if ((__formMode==0)||(__formMode==2)) {
+      _itemID=vfGetUrlParameter("ID");
+
+      /**
+       * (If no custom layout is used) optionally place the ID immediately
+       * above or below an existing field. In the following example, ID is
+       * placed just above Title.
+       */
+      //jQuery(__field+"('"+_labelTitle+"')").closest("tr").find(
+      //  "td.ms-formbody"
+      //).prepend(
+      //  "Request ID "+_itemID+"<br /><br />"
+      //); // Note that <br /> is necessary only if Title is to remain visible.
+
+      /**
+       * (If a custom layout is used) optionally place the item ID inside a
+       * designated span tag, as shown in the following example.
+       */
+      //jQuery("span[id='formItemID']").append(_itemID);
+
+    } // end of if ((__formMode==0)||(__formMode==2))
+
+    /**
+     * Initialise DispForm.aspx.
+     */
+    if (__formMode==0) {
+      definePresentationLogicForViewMode();
+    } // end of if (__formMode==0)
+
+    /**
+     * Initialise NewForm.aspx and EditForm.aspx.
+     */
+    if (__formMode>=1) {
+      definePresentationLogicForEditMode();
+      conditionallyShowAndHideFields();
+
+      /**
+       * Further initialise NewForm.aspx if necessary.
+       */
+      if (__formMode==1) {
+
+        /**
+         * On NewForm.aspx, no item ID is available; as such, hide the
+         * placeholder if a custom form layout has one. Also hide any fields
+         * whose values cannot be determined by the user at the time of
+         * creating an item.
+         */
+        //jQuery("span[id^='formItemID']").hide();
+
+      } // end of if (__formMode==1)
+
+      /**
+       * Further initialise EditForm.aspx if necessary.
+       */
+      if (__formMode==2) {
+        _itemTitle=jQuery("input[title='"+_labeltitle+"']").val();
+      } // end of if (__formMode==2)
+    } // end of if (__formMode>=1)
+  } // end of function initialiseForm()
+
+  /**
+   * [Function] Register form events. Events in this function are registered
+   * once per page load.
+   */
+  function registerFormEvents() {
+
+    /**
+     * Define events for view mode.
+     */
+    if (__formMode==0) {
+
+      /**
+       * [Event] Pressing ESC closes a modal pop-up if present. This is not
+       * applicable to the current release of Vanilla Fix, but may be used
+       * agian if pop-ups are re-introduced at some point in the future.
+       */
+      jQuery(document).on("keydown",function (e) {
+        var keyCode=(e.keyCode)||(e.which);
+        if (keyCode==27) jQuery("div[id^='popup']").hide();
+      }); // end of Pressing ESC
+    } // end of if (__formMode==0)
+
+    /**
+     * Define events for edit mode.
+     */
+    if (__formMode>=1) {
+
+      /**
+       * [Event] Example event
+       */
+      //jQuery("input[title='"+_labelTitle+"']").on("change",function () {
+      //  _userSetTitle=jQuery("input[title='"+_labeltitle+"']").val();
+      //  conditionallyShowAndHideFields(); // ...and/or other actions as needed
+      //}); // end of Example event
+
+    } // end of if (__formMode>=1)
+  } // end of function registerFormEvents()
+
+  /**
+   * [Function] Render the form. This function is triggered once per page load.
+   */
+  function renderForm() {
+    if (_isCustomLayoutUsed) {
+      vfApplyCustomLayout();
+      jQuery("div#formWithCustomLayout").show();
+    }
+    initialiseForm();
+    registerFormEvents();
+    if (_checkingForPulse) alert(__respondToPulseCheck);
+  } // end of function renderForm()
+
+  /**
+   * [SharePoint] Execute on page load.
+   */
+  _spBodyOnLoadFunctionNames.push("renderForm");
+
+  /**
+   * [SharePoint] Perform validation upon save. This function kicks in only in
+   * edit mode, that is, __formMode>=1.
+   */
+  function PreSaveItem() {
+
+    /**
+     * Read in user-set field contents if necessary.
+     */
+    _userSetTitle=jQuery("input[title='"+_labeltitle+"']").val();
+
+    /**
+     * Example validation:
+     */
+    //if (_userSetTitle=="") {
+    //  alert("Title cannot be left blank.");
+    //  jQuery("input[title='"+_labelTitle+"']").focus();
+    //  return false;
+    //}
+
+    return true; // Let SharePoint handle the rest.
+  } // end of function PreSaveItem()
+
+
+
+  /**
+   * Notes
+   * 1. Each value must match the display name of the corresponding list column.
+   * 2. "_item"-prefixed variables are intended to either capture item metadata
+   *    in view mode, or remember "original" item metadta in edit mode before
+   *    allowing a user to make changes. These variables are considered static,
+   *    that is, they stay persistent throughout page load. While the use of
+   *    _item-prefixed variables is optional, it may be more flexible and
+   *    readable than a repeated use of identical jQuery selectors.
+   * 3. "_userSet"-prefixed variables are designed for edit mode only. They act
+   *    as intermediary storage for "live" item metadata, which may or may not
+   *    have been changed by the user. These variables may be updated as many
+   *    times as necessary until Save. The use of _userSet-prefixed variables
+   *    is strictly optional, but may come in handy depending on the complexity
+   *    of data validation required. Functions such as PreSaveItem() may
+   *    compare the _item- and _userSet- values of a particular field for
+   *    validation purposes.
+   */
+
+</script>
+
+
+
+<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::F:::::::::: -->
+<!-- CUSTOM FORM LAYOUT (visible if _isCustomLayoutUsed is set to true) -->
+<div id="formWithCustomLayout" class="formWrapper">
+  <div class="formDivRow borderTop">
+    <div id="formSection1Row1Col1" class="formDiv1Col">
+      <span id="formHeading1" class="customLayoutSectionTitle">
+        Form Section 1 Heading
+      </span>
+    </div>
+  </div>
+  <div class="formDivRow">
+    <div id="formSection1Row2Col1" class="formDiv2Col">
+      <p><span id="formTitleLabel">
+        <strong>Title</strong>
+        <span class="editMode bold red">*</span>
+      </span></p>
+      <span id="formTitle" class="customLayout"
+        data-displayName="Title"
+      ></span>
+    </div>
+    <div id="formSection1Row2Col2" class="formDiv2Col">
+      <p><span id="formItemIDLabel">
+        <strong>ID</strong>
+      </span></p>
+      <span id="formItemID"></span>
+    </div>
+  </div>
+  <div class="formDivRow">
+    <div id="formSection1Row3Col1" class="formDiv2Col">
+      <p><span id="formListField2Label">
+        <strong>List Field 2</strong>
+        <span class="editMode bold red">*</span>
+      </span></p>
+      <span id="formListField2" class="customLayout"
+        data-displayName="Second Field in List"
+      ></span>
+    </div>
+    <div id="formSection1Row3Col2" class="formDiv2Col">
+      <p><span id="formListField3Label">
+        <strong>List Field 3</strong>
+      </span></p>
+      <span id="formListField3" class="customLayout"
+        data-displayName="Third Field in List"
+      ></span>
+    </div>
+  </div>
+</div>
+
+

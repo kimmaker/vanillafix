@@ -1,0 +1,154 @@
+/*
+Vanilla Fix for SharePoint: Stylesheet
+http://vanillafix.com
+
+Stylesheet Release: 181105
+*/
+
+
+
+/* [SharePoint styles, overridden as needed] */
+hr {
+  color: #EEEEEE;
+  background-color: #EEEEEE;
+  border-color: #EEEEEE;
+}
+.ms-core-pageTitle {
+  /* Page title */
+  font-weight: inherit;
+}
+.ms-textXLarge {
+  /* Large text */
+  font-weight: inherit;
+}
+.ms-usereditor,
+.ms-long {
+  /* Multi-line textbox */
+  width: 92%; /* SharePoint default is 386px. */
+}
+.sp-peoplepicker-topLevel,
+.sp-peoplepicker-topLevelDisabled {
+  /* People-picker */
+  font-weight: inherit;
+}
+.ms-ButtonHeightWidth {
+  /* Button on form */
+  font-weight: inherit;
+}
+.ms-propertysheet a {
+  /* "Delete" links in item attachment list */
+  font-weight: normal;
+  padding: 1px 6px 1px 1px;
+  background-color: #DDDDDD;
+}
+
+
+
+/* [Custom re-usable styles] */
+.editMode {
+  /* This is a class used for conditional visibility. */
+  display: none;
+  font-weight: inherit;
+}
+.bold { font-weight: bold; }
+.red { color: #FF0000; }
+.black { color: #000000; }
+
+
+
+/* [Styles for forms using a custom layout and/or pop-ups] */
+.formWrapper {
+  clear: both;
+  margin: 0px 0px 4px 4px;
+  display: none;
+}
+.formDivRow {
+  clear: both;
+  margin: 32px 16px 0px 0px;
+}
+.formDiv1Col {
+  margin: 0px 32px 32px 0px;
+}
+.formDiv2Col {
+  float: left;
+  width: 44%;
+  margin: 0px 16px 32px 0px;
+  padding-right: 16px;
+}
+.formDiv3Col {
+  float: left;
+  width: 29%;
+  margin: 0px 16px 32px 0px;
+  padding-right: 16px;
+}
+.borderTop {
+  border-top: 1px solid #CCCCCC;
+  padding-top: 32px;
+}
+.borderRight {
+  border-right: 1px solid #CCCCCC;
+}
+.customLayoutSectionTitle {
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+.customLayoutSectionSubTitle {
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  text-transform: none;
+}
+
+
+
+/*
+Styles related to pop-up content are currently not used, but may be re-
+introduced in the future.
+*/
+.openPopup,
+.openModal {
+  display: none;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 60%;
+  padding: 48px 36px 20px 20px;
+  background-color: #EEEEEE;
+  border: 1px solid #000000;
+  z-index:1001;
+  overflow: hidden;
+}
+.renderPopup,
+.renderModal {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  padding-right: 16px;
+  position: relative;
+}
+.p-indented {
+  padding-left: 48px;
+}
+.popupClose {
+  position: inherit;
+  top: 4px;
+  right: 4px;
+  overflow: hidden;
+  z-index:1002;
+}
+.popupCloseButton {
+  display: block;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+}
+.popupCloseButton img {
+  width: 36px;
+  height: 36px;
+}
+
+
