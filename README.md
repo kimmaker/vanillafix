@@ -1,4 +1,4 @@
 # vanillafix
 Front-end form design patterns for the SharePoint platform
 
-[Documentation](http://vanillafix.com)
+Documentation at [vanillafix.com](http://vanillafix.com)
