@@ -2,7 +2,7 @@
 Vanilla Fix for SharePoint: Stylesheet
 http://vanillafix.com
 
-Stylesheet Release: 181105
+Stylesheet Release: 181109
 */
 
 
@@ -56,7 +56,7 @@ hr {
 
 
 
-/* [Styles for forms using a custom layout and/or pop-ups] */
+/* [Styles for forms using a custom layout] */
 .formWrapper {
   clear: both;
   margin: 0px 0px 4px 4px;
@@ -100,55 +100,5 @@ hr {
   text-transform: none;
 }
 
-
-
-/*
-Styles related to pop-up content are currently not used, but may be re-
-introduced in the future.
-*/
-.openPopup,
-.openModal {
-  display: none;
-  position: absolute;
-  top: 25%;
-  left: 25%;
-  width: 50%;
-  height: 60%;
-  padding: 48px 36px 20px 20px;
-  background-color: #EEEEEE;
-  border: 1px solid #000000;
-  z-index:1001;
-  overflow: hidden;
-}
-.renderPopup,
-.renderModal {
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
-  height: 100%;
-  padding-right: 16px;
-  position: relative;
-}
-.p-indented {
-  padding-left: 48px;
-}
-.popupClose {
-  position: inherit;
-  top: 4px;
-  right: 4px;
-  overflow: hidden;
-  z-index:1002;
-}
-.popupCloseButton {
-  display: block;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  margin: 0;
-}
-.popupCloseButton img {
-  width: 36px;
-  height: 36px;
-}
 
 
