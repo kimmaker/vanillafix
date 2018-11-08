@@ -21,8 +21,6 @@ Form Customisation Release: YYMMDD
    * variables are found in vf-sp.js).
    */
   var _checkingForPulse=true; // Set to false after initial testing.
-  var _messageFirstTimeTesting="Vanilla Fix is in place."
-  +" Now set _firstTimeTesting to false and get on with customisation.";
   var _isCustomLayoutUsed=false; // Set to false if no custom layout is used.
   var _itemID=""; // This will be made known on DispForm and EditForm.
   var _labelTitle="Title"; // See Note 1.
@@ -198,13 +196,15 @@ Form Customisation Release: YYMMDD
    * [Function] Render the form. This function is triggered once per page load.
    */
   function renderForm() {
+    initialiseForm();
+    registerFormEvents();
     if (_isCustomLayoutUsed) {
       vfApplyCustomLayout();
       jQuery("div#formWithCustomLayout").show();
     }
-    initialiseForm();
-    registerFormEvents();
-    if (_checkingForPulse) alert(__respondToPulseCheck);
+    if (_checkingForPulse) {
+      setTimeout(function() { alert(__respondToPulseCheck); },500);
+    }
   } // end of function renderForm()
 
   /**
