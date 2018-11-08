@@ -8,6 +8,10 @@ Stylesheet Release: 181109
 
 
 /* [SharePoint styles, overridden as needed] */
+#onetIDListForm {
+  /* List form starts hidden */
+  display: none;
+}
 hr {
   color: #EEEEEE;
   background-color: #EEEEEE;

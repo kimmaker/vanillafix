@@ -85,6 +85,14 @@ Form Customisation Release: YYMMDD
     else if (__currentURL.indexOf("EditForm.aspx")>=0) __formMode=2;
 
     /**
+     * Apply a custom form layout if instructed to do so.
+     */
+     if (_isCustomLayoutUsed) {
+      vfApplyCustomLayout();
+      jQuery("div#formWithCustomLayout").show();
+    }
+
+    /**
      * Control the visibility of edit mode-only elements.
      */
     jQuery(".editMode").hide();
@@ -198,10 +206,7 @@ Form Customisation Release: YYMMDD
   function renderForm() {
     initialiseForm();
     registerFormEvents();
-    if (_isCustomLayoutUsed) {
-      vfApplyCustomLayout();
-      jQuery("div#formWithCustomLayout").show();
-    }
+    jQuery("#onetIDListForm").delay(500).fadeIn(500);
     if (_checkingForPulse) {
       setTimeout(function() { alert(__respondToPulseCheck); },500);
     }
