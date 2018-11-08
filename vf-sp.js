@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181105
+ * Base Release: 181108
  */
 
 /**
@@ -28,6 +28,7 @@ var __daysOfWeek=[
 var __field=".ms-standardheader:contains";
 var __formMode=-1; // 0: DispForm | 1: NewForm | 2: EditForm | -1: Unknown
 var __indicatorPopUp="IsDlg=1";
+var __listForm="#onetIDListForm";
 var __markAsterisk=" *";
 var __respondToPulseCheck="Vanilla Fix is in place."
 +" When you see this message on all three .aspx forms of this list/library,"

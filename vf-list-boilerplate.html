@@ -206,7 +206,7 @@ Form Customisation Release: YYMMDD
   function renderForm() {
     initialiseForm();
     registerFormEvents();
-    jQuery("#onetIDListForm").delay(500).fadeIn(500);
+    jQuery(__listForm).delay(500).fadeIn(500);
     if (_checkingForPulse) {
       setTimeout(function() { alert(__respondToPulseCheck); },500);
     }
