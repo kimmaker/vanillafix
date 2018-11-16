@@ -48,7 +48,7 @@ Form Customisation Release: YYMMDD
    * to run once per page load.
    */
   function definePresentationLogicForEditMode() {
-    conditionallyShowAndHideFields();
+    conditionallyCustomiseFields();
 
     /**
      * Define actions that take place only during form intialisation.
@@ -59,10 +59,10 @@ Form Customisation Release: YYMMDD
   } // end of function definePresentationLogicForEditMode()
 
   /**
-   * [Function] Conditionally show and hide fields. This function applies to
-   * edit mode only, and may be triggered multiple times as user input changes.
+   * [Function] Conditionally customise fields. This function applies to edit
+   * mode only, and may be triggered multiple times as user input changes.
    */
-  function conditionallyShowAndHideFields() {
+  function conditionallyCustomiseFields() {
 
     /**
      * Example:
@@ -71,7 +71,7 @@ Form Customisation Release: YYMMDD
     //  jQuery("span[id^='formListField3']").show();
     //} else jQuery("span[id^='formListField3']").hide();
 
-  } // end of function conditionallyShowAndHideFields()
+  } // end of function conditionallyCustomiseFields()
 
   /**
    * [Function] Initialise form elements. This function is triggered once per
@@ -195,7 +195,7 @@ Form Customisation Release: YYMMDD
        */
       //jQuery("input[title='"+_lableTitle+"']").on("change",function () {
       //  _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
-      //  conditionallyShowAndHideFields(); // ...and/or other actions as needed
+      //  conditionallyCustomiseFields(); // ...and/or other actions as needed
       //}); // end of Example event
 
     } // end of if (__formMode>=1)
