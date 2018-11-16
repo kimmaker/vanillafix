@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181109
+ * Base Release: 181116
  */
 
 /**
@@ -36,6 +36,7 @@ var __regExEmail=/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\")
 var __respondToPulseCheck="Vanilla Fix is in place."
 +" When you see this message on all three .aspx forms of this list/library,"
 +" set _checkingForPulse to false and get on with customisation.";
+var __spanAsterisk="<span class='editMode bold red'>"+__markAsterisk+"</span>";
 
 /**
  * [Common Function] Sanitise a string by removing all whitespaces, tab
