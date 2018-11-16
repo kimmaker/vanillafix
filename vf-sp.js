@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181108
+ * Base Release: 181109
  */
 
 /**
@@ -30,12 +30,12 @@ var __formMode=-1; // 0: DispForm | 1: NewForm | 2: EditForm | -1: Unknown
 var __indicatorPopUp="IsDlg=1";
 var __listForm="#onetIDListForm";
 var __markAsterisk=" *";
-var __respondToPulseCheck="Vanilla Fix is in place."
-+" When you see this message on all three .aspx forms of this list/library,"
-+" set _checkingForPulse to false and get on with customisation.";
 var __queryString=window.location.search;
 var __regExEmail=/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 // usage: if (__regExEmail.test(theTestString)==false) alert("Invalid");
+var __respondToPulseCheck="Vanilla Fix is in place."
++" When you see this message on all three .aspx forms of this list/library,"
++" set _checkingForPulse to false and get on with customisation.";
 
 /**
  * [Common Function] Sanitise a string by removing all whitespaces, tab
@@ -85,8 +85,9 @@ function vfRemoveAppendedCharacters(theString,theChars) {
  * This function is based on ideas from: https://kimmaker.com/ref/501
  *
  * Below is an example HTML form structure that contains a custom layout.
- * Note: All 'span' tags must contain 'class="customLayout"' and
- * data-displayName' attributes. All other attributes are optional.
+ * Important: All 'span' tags that represent a field must contain
+ * 'class="customLayout"' and 'data-displayName' attributes. All other
+ * attributes are optional.
  */
 /*
 <div id="formWithCustomLayout" class="formWrapper">
@@ -290,7 +291,7 @@ function vfAssembleTimeOfDayString(theFieldLabel,theSeparator) {
   }
   assembledString=hPortion+theSeparator+mPortion+indicatorAmPm;
   return vfSanitiseText(assembledString);
-} // end of function vfAssembleTimeOfDayString(1)
+} // end of function vfAssembleTimeOfDayString(2)
 
 /**
  * [Commmon Function] Get the specified parameter from the query string. This

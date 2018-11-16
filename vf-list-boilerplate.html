@@ -23,7 +23,7 @@ Form Customisation Release: YYMMDD
   var _checkingForPulse=true; // Set to false after initial testing.
   var _isCustomLayoutUsed=false; // Set to false if no custom layout is used.
   var _itemID=""; // This will be made known on DispForm and EditForm.
-  var _labelTitle="Title"; // See Note 1.
+  var _lableTitle="Title"; // See Note 1.
   var _labelListField2="Second Field in List"; // See Note 1.
   var _labelListField3="Third Field in List"; // See Note 1.
   var _labelListField4="Fourth Field in List"; // See Note 1.
@@ -39,7 +39,7 @@ Form Customisation Release: YYMMDD
     /**
      * Example:
      */
-    //jQuery(__field+"('"+_labelTitle+"')").closest("tr").hide();
+    //jQuery(__field+"('"+_lableTitle+"')").closest("tr").hide();
 
   } // end of function definePresentationLogicForViewMode()
 
@@ -48,9 +48,11 @@ Form Customisation Release: YYMMDD
    * to run once per page load.
    */
   function definePresentationLogicForEditMode() {
+    conditionallyShowAndHideFields();
 
     /**
-     * Example:
+     * Define actions that take place only during form intialisation.
+     * For example:
      */
     //jQuery(__field+"('"+_labelListField2+"')").closest("tr").hide();
 
@@ -110,7 +112,7 @@ Form Customisation Release: YYMMDD
        * above or below an existing field. In the following example, ID is
        * placed just above Title.
        */
-      //jQuery(__field+"('"+_labelTitle+"')").closest("tr").find(
+      //jQuery(__field+"('"+_lableTitle+"')").closest("tr").find(
       //  "td.ms-formbody"
       //).prepend(
       //  "Request ID "+_itemID+"<br /><br />"
@@ -136,7 +138,6 @@ Form Customisation Release: YYMMDD
      */
     if (__formMode>=1) {
       definePresentationLogicForEditMode();
-      conditionallyShowAndHideFields();
 
       /**
        * Further initialise NewForm.aspx if necessary.
@@ -157,7 +158,7 @@ Form Customisation Release: YYMMDD
        * Further initialise EditForm.aspx if necessary.
        */
       if (__formMode==2) {
-        _itemTitle=jQuery("input[title='"+_labeltitle+"']").val();
+        _itemTitle=jQuery("input[title='"+_lableTitle+"']").val();
       } // end of if (__formMode==2)
     } // end of if (__formMode>=1)
   } // end of function initialiseForm()
@@ -192,8 +193,8 @@ Form Customisation Release: YYMMDD
       /**
        * [Event] Example event
        */
-      //jQuery("input[title='"+_labelTitle+"']").on("change",function () {
-      //  _userSetTitle=jQuery("input[title='"+_labeltitle+"']").val();
+      //jQuery("input[title='"+_lableTitle+"']").on("change",function () {
+      //  _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
       //  conditionallyShowAndHideFields(); // ...and/or other actions as needed
       //}); // end of Example event
 
@@ -226,14 +227,14 @@ Form Customisation Release: YYMMDD
     /**
      * Read in user-set field contents if necessary.
      */
-    _userSetTitle=jQuery("input[title='"+_labeltitle+"']").val();
+    _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
 
     /**
      * Example validation:
      */
     //if (_userSetTitle=="") {
     //  alert("Title cannot be left blank.");
-    //  jQuery("input[title='"+_labelTitle+"']").focus();
+    //  jQuery("input[title='"+_lableTitle+"']").focus();
     //  return false;
     //}
 
