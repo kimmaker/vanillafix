@@ -31,6 +31,21 @@ Form Customisation Release: YYMMDD
   var _userSetTitle=""; // See Note 3.
 
   /**
+   * [Function] Conditionally customise fields. This function applies to edit
+   * mode only, and may be triggered multiple times as user input changes.
+   */
+  function conditionallyCustomiseFields() {
+
+    /**
+     * Example:
+     */
+    //if (jQuery("input[title='"+_labelListField2+"']").val()=="") {
+    //  jQuery("span[id^='formListField3']").show();
+    //} else jQuery("span[id^='formListField3']").hide();
+
+  } // end of function conditionallyCustomiseFields()
+
+  /**
    * [Function] Prepare form elements for view mode. This function is designed
    * to run once per page load.
    */
@@ -48,7 +63,6 @@ Form Customisation Release: YYMMDD
    * to run once per page load.
    */
   function definePresentationLogicForEditMode() {
-    conditionallyCustomiseFields();
 
     /**
      * Define actions that take place only during form intialisation.
@@ -56,22 +70,12 @@ Form Customisation Release: YYMMDD
      */
     //jQuery(__field+"('"+_labelListField2+"')").closest("tr").hide();
 
-  } // end of function definePresentationLogicForEditMode()
-
-  /**
-   * [Function] Conditionally customise fields. This function applies to edit
-   * mode only, and may be triggered multiple times as user input changes.
-   */
-  function conditionallyCustomiseFields() {
-
     /**
-     * Example:
+     * Also ensure that fields behave according to the current state of the
+     * list item, be it an existing one or a new one.
      */
-    //if (jQuery("input[title='"+_labelListField2+"']").val()=="") {
-    //  jQuery("span[id^='formListField3']").show();
-    //} else jQuery("span[id^='formListField3']").hide();
-
-  } // end of function conditionallyCustomiseFields()
+    conditionallyCustomiseFields();
+  } // end of function definePresentationLogicForEditMode()
 
   /**
    * [Function] Initialise form elements. This function is triggered once per
@@ -127,14 +131,14 @@ Form Customisation Release: YYMMDD
     } // end of if ((__formMode==0)||(__formMode==2))
 
     /**
-     * Initialise DispForm.aspx.
+     * Initialise the form in view mode (DispForm.aspx).
      */
     if (__formMode==0) {
       definePresentationLogicForViewMode();
     } // end of if (__formMode==0)
 
     /**
-     * Initialise NewForm.aspx and EditForm.aspx.
+     * Initialise the form in edit mode (NewForm.aspx and EditForm.aspx).
      */
     if (__formMode>=1) {
       definePresentationLogicForEditMode();
@@ -158,7 +162,9 @@ Form Customisation Release: YYMMDD
        * Further initialise EditForm.aspx if necessary.
        */
       if (__formMode==2) {
-        _itemTitle=jQuery("input[title='"+_lableTitle+"']").val();
+        _itemTitle=vfSanitiseText(
+          jQuery("input[title='"+_lableTitle+"']").val()
+        );
       } // end of if (__formMode==2)
     } // end of if (__formMode>=1)
   } // end of function initialiseForm()
@@ -225,9 +231,11 @@ Form Customisation Release: YYMMDD
   function PreSaveItem() {
 
     /**
-     * Read in user-set field contents if necessary.
+     * Read in user input at Save for validation and further processing.
      */
-    _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
+    _userSetTitle=vfSanitiseText(
+      jQuery("input[title='"+_lableTitle+"']").val()
+    );
 
     /**
      * Example validation:
