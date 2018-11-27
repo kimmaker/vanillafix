@@ -84,13 +84,6 @@ Form Customisation Release: YYMMDD
   function initialiseForm() {
 
     /**
-     * Determine __formMode.
-     */
-    if (__currentURL.indexOf("DispForm.aspx")>=0) __formMode=0;
-    else if (__currentURL.indexOf("NewForm.aspx")>=0) __formMode=1;
-    else if (__currentURL.indexOf("EditForm.aspx")>=0) __formMode=2;
-
-    /**
      * Apply a custom form layout if instructed to do so.
      */
      if (_isCustomLayoutUsed) {

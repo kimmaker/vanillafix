@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181116
+ * Base Release: 181128
  */
 
 /**
@@ -27,6 +27,9 @@ var __daysOfWeek=[
 ];
 var __field=".ms-standardheader:contains";
 var __formMode=-1; // 0: DispForm | 1: NewForm | 2: EditForm | -1: Unknown
+if (__currentURL.indexOf("DispForm.aspx")>=0) __formMode=0;
+else if (__currentURL.indexOf("NewForm.aspx")>=0) __formMode=1;
+else if (__currentURL.indexOf("EditForm.aspx")>=0) __formMode=2;
 var __indicatorPopUp="IsDlg=1";
 var __listForm="#onetIDListForm";
 var __markAsterisk=" *";
