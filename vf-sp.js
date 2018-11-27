@@ -2,12 +2,10 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181128
+ * Base Release: 181129
  */
 
-/**
- * First, check for required libraries.
- */
+// Check for required libraries.
 if (typeof jQuery==='undefined') {
   alert("Oops! A required JavaScript library is not loaded.");
   window.open("","_self").close();
@@ -15,9 +13,7 @@ if (typeof jQuery==='undefined') {
   //alert(jQuery.fn.jquery);
 }
 
-/**
- * Initialise list-independent global variables.
- */
+// Initialise list-agnostic global variables.
 var __currentDate=new Date(); __currentDate.setHours(0,0,0,0);
 var __currentTimeZone=((__currentDate.toString()).match(/\((.*?)\)/g).toString()
 ).replace(/[()]/g,"");
@@ -41,19 +37,19 @@ var __respondToPulseCheck="Vanilla Fix is in place."
 +" set _checkingForPulse to false and get on with customisation.";
 var __spanAsterisk="<span class='editMode bold red'>"+__markAsterisk+"</span>";
 
-/**
- * [Common Function] Sanitise a string by removing all whitespaces, tab
- * stops, and new-line characters.
- */
+//--
+// [Common Function] Sanitise a string by removing all whitespaces, tab
+// stops, and new-line characters.
+//--
 function vfSanitiseText(theText) {
   return jQuery.trim(theText).replace(/(\r\n|\n|\r|\t)/gm,"");
 } // end of function vfSanitiseText(1)
 
-/**
- * [Commmon Function] Append a specified series of characters, such as a
- * space followed by an asterisk, to a string if those characters are not
- * already present.
- */
+//--
+// [Commmon Function] Append a specified series of characters, such as a
+// space followed by an asterisk, to a string if those characters are not
+// already present.
+//--
 function vfAppendCharacters(theString,theChars) {
   if (theString===undefined) return "";
   if (theChars===undefined) return theString;
@@ -63,10 +59,10 @@ function vfAppendCharacters(theString,theChars) {
   return theString;
 } // end of function vfAppendCharacters(2)
 
-/**
- * [Commmon Function] Remove the last occurrence of a specified series of
- * characters, such as a space followed by an asterisk, from a string.
- */
+//--
+// [Commmon Function] Remove the last occurrence of a specified series of
+// characters, such as a space followed by an asterisk, from a string.
+//--
 function vfRemoveAppendedCharacters(theString,theChars) {
   if (theString===undefined) return "";
   if (theChars===undefined) return theString;
@@ -76,23 +72,22 @@ function vfRemoveAppendedCharacters(theString,theChars) {
   return theString;
 } // end of function vfRemoveAppendedCharacters(2)
 
-/**
- * [Commmon Function] Apply a custom layout to a SharePoint list form. This
- * function first hides the native form and then moves its contents over to
- * designated placeholders inside a custom form structure (layout).
- *
- * While the use of this function is strictly optional, it can overcome the
- * linear one-field-per-row layout built into every out-of-the-box SharePoint
- * list form, that is, without relying on tools such as InfoPath, Nintex Forms,
- * or SharePoint Designer.
- *
- * This function is based on ideas from: https://kimmaker.com/ref/501
- *
- * Below is an example HTML form structure that contains a custom layout.
- * Important: All 'span' tags that represent a field must contain
- * 'class="customLayout"' and 'data-displayName' attributes. All other
- * attributes are optional.
- */
+//--
+// [Commmon Function] Apply a custom layout to a SharePoint list form. This
+// function first hides the native form and then moves its contents over to
+// designated placeholders inside a custom form structure (layout).
+//
+// While the use of this function is strictly optional, it can overcome the
+// linear one-field-per-row layout built into every out-of-the-box SharePoint
+// list form, that is, without relying on tools such as InfoPath, Nintex Forms,
+// or SharePoint Designer.
+//
+// This function is based on ideas from: https://kimmaker.com/ref/501
+//
+// Below is an example HTML form structure that contains a custom layout.
+// Important: All 'span' tags that represent a field must contain
+// 'class="customLayout"' and 'data-displayName' attributes. All other
+// attributes are optional.
 /*
 <div id="formWithCustomLayout" class="formWrapper">
   <div class="formDivRow borderTop">
@@ -140,6 +135,7 @@ function vfRemoveAppendedCharacters(theString,theChars) {
   </div>
 </div>
 */
+//--
 function vfApplyCustomLayout() {
   jQuery(".ms-formtable").hide();
   jQuery("span.customLayout").each(function () {
@@ -153,40 +149,40 @@ function vfApplyCustomLayout() {
   });
 } // end of function vfApplyCustomLayout()
 
-/**
- * [Commmon Function] Convert a SharePoint time string to a sortable 24-hour
- * equivalent; for example, "11:00 PM" returns "23:00". The function also
- * works for strings that contain variations of English-language AM/PM
- * indications such as "a.m." and "p.m.". The default hour-minute
- * separator is the ":" symbol; however, a different separator, including
- * a blank string, can be specified in an optional second argument. An
- * optional third argument specifies the hour-minute separator in the
- * output. All invalid input strings return "00:00" (or its equivalent if
- * a custom hour-minute separator is used).
- *
- * Further examples:
- * ("9:00 AM") returns "09:00"
- * ("9:00 PM") returns "21:00"
- * ("9:00") returns "09:00"
- * ("9:00",":","") returns "0900"
- * ("9:00 PM",":") returns "21:00"
- * ("9.00 PM",".") returns "21.00"
- * ("9:00 PM",".") returns "00.00" (invalid input)
- * ("9.00 PM",".","") returns "2100"
- * ("9:00 PM",":","") returns "2100"
- * ("9:00 PM",":",".") returns "21.00"
- * ("9.00 PM",".",":") returns "21:00"
- * ("9.00 PM",":",":") returns "00:00" (invalid input)
- * ("9:30pm") returns "21:30"
- * ("9.30pm",".") returns "21.30"
- * ("9.30pm",".","") returns "2130"
- * ("9.30pm",".",":") returns "21:30"
- * ("9pm") returns "00:00" (invalid input)
- * ("9pm","") returns "2100"
- * ("9pm","",":") returns "21:00"
- * ("0900p","") returns "2100"
- * ("930p","",":") returns "21:30"
- */
+//--
+// [Commmon Function] Convert a SharePoint time string to a sortable 24-hour
+// equivalent; for example, "11:00 PM" returns "23:00". The function also
+// works for strings that contain variations of English-language AM/PM
+// indications such as "a.m." and "p.m.". The default hour-minute
+// separator is the ":" symbol; however, a different separator, including
+// a blank string, can be specified in an optional second argument. An
+// optional third argument specifies the hour-minute separator in the
+// output. All invalid input strings return "00:00" (or its equivalent if
+// a custom hour-minute separator is used).
+//
+// Further examples:
+// ("9:00 AM") returns "09:00"
+// ("9:00 PM") returns "21:00"
+// ("9:00") returns "09:00"
+// ("9:00",":","") returns "0900"
+// ("9:00 PM",":") returns "21:00"
+// ("9.00 PM",".") returns "21.00"
+// ("9:00 PM",".") returns "00.00" (invalid input)
+// ("9.00 PM",".","") returns "2100"
+// ("9:00 PM",":","") returns "2100"
+// ("9:00 PM",":",".") returns "21.00"
+// ("9.00 PM",".",":") returns "21:00"
+// ("9.00 PM",":",":") returns "00:00" (invalid input)
+// ("9:30pm") returns "21:30"
+// ("9.30pm",".") returns "21.30"
+// ("9.30pm",".","") returns "2130"
+// ("9.30pm",".",":") returns "21:30"
+// ("9pm") returns "00:00" (invalid input)
+// ("9pm","") returns "2100"
+// ("9pm","",":") returns "21:00"
+// ("0900p","") returns "2100"
+// ("930p","",":") returns "21:30"
+//--
 function vfConvertToSortableTime(
   theTime,theSeparatorInInput,theSeparatorInOutput
 ) {
@@ -235,26 +231,26 @@ function vfConvertToSortableTime(
   return timeH+theSeparatorInOutput+timeM;
 } // end of function vfConvertToSortableTime(3)
 
-/**
- * [Commmon Function] Convert a conventional date string to YYYY-MM-DD;
- * for example, "13/07/2019" returns "2019-07-13". An optional second
- * argument can specify what the day-month-year separator in the input
- * string is. If the second argument is not given, the function uses "/".
- * An optional third argument may be set to "US" in which case the input
- * string is recognised as month-day-year instead of day-month-year. All
- * invalid inputs return "YYYY-01-01" where YYYY is the current year.
- *
- * Further examples:
- * ("29/2/2020") returns "2020-02-29"
- * ("29/2/2021") returns "2018-01-01" (invalid input)
- * ("11/12/2020","/") returns "2020-12-11"
- * ("11.12.2020") returns "2018-01-01" (invalid input)
- * ("11.12.2020",".") returns "2020-12-11"
- * ("11-12-2020","-") returns "2020-12-11"
- * ("11.12.2020",".","US") returns "2020-11-12"
- * ("11-12-2020","-","US") returns "2020-11-12"
- * ("11/12/2020","/","en-US") returns "2020-11-12"
- */
+//--
+// [Commmon Function] Convert a conventional date string to YYYY-MM-DD;
+// for example, "13/07/2019" returns "2019-07-13". An optional second
+// argument can specify what the day-month-year separator in the input
+// string is. If the second argument is not given, the function uses "/".
+// An optional third argument may be set to "US" in which case the input
+// string is recognised as month-day-year instead of day-month-year. All
+// invalid inputs return "YYYY-01-01" where YYYY is the current year.
+//
+// Further examples:
+// ("29/2/2020") returns "2020-02-29"
+// ("29/2/2021") returns "2018-01-01" (invalid input)
+// ("11/12/2020","/") returns "2020-12-11"
+// ("11.12.2020") returns "2018-01-01" (invalid input)
+// ("11.12.2020",".") returns "2020-12-11"
+// ("11-12-2020","-") returns "2020-12-11"
+// ("11.12.2020",".","US") returns "2020-11-12"
+// ("11-12-2020","-","US") returns "2020-11-12"
+// ("11/12/2020","/","en-US") returns "2020-11-12"
+//--
 function vfConvertToSortableDate(theDate,theSeparator,theLocale) {
   var currentYYYY=__currentDate.getFullYear();
   var defaultYMD=currentYYYY+"-01-01";
@@ -275,10 +271,10 @@ function vfConvertToSortableDate(theDate,theSeparator,theLocale) {
   else return strYMD;
 } // end of function vfConvertToSortableDate(3)
 
-/**
- * [Commmon Function] Extract HH:mm from a SharePoint time field. If the input
- * time is in 12-hour format, also indicate AM or PM.
- */
+//--
+// [Commmon Function] Extract HH:mm from a SharePoint time field. If the input
+// time is in 12-hour format, also indicate AM or PM.
+//--
 function vfAssembleTimeOfDayString(theFieldLabel,theSeparator) {
   if (theSeparator===undefined) theSeparator=":";
   var assembledString="";
@@ -297,10 +293,10 @@ function vfAssembleTimeOfDayString(theFieldLabel,theSeparator) {
   return vfSanitiseText(assembledString);
 } // end of function vfAssembleTimeOfDayString(2)
 
-/**
- * [Commmon Function] Get the specified parameter from the query string. This
- * function is based on ideas from: https://kimmaker.com/ref/505
- */
+//--
+// [Commmon Function] Get the specified parameter from the query string. This
+// function is based on ideas from: https://kimmaker.com/ref/505
+//--
 function vfGetUrlParameter(theParameter) {
   theParameter=theParameter.replace(/[\[]/,'\\[').replace(/[\]]/,'\\]');
   var regex=new RegExp('[\\?&]'+theParameter+'=([^&#]*)');

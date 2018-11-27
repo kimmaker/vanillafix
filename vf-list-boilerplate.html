@@ -8,7 +8,7 @@ List: [Name of List or Library]
 Form Customisation Release: YYMMDD
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!-- Load required libraries and styles; ### ENSURE CORRECT PATHS!! ### -->
+<!-- Load required libraries and styles. ENSURE CORRECT PATHS. -->
 <script src="../../SiteAssets/jquery-3.3.1.min.js"></script>
 <script src="../../SiteAssets/vf-sp.js"></script>
 <link rel="stylesheet" href="../../SiteAssets/vf-sp-styles.css" />
@@ -16,10 +16,8 @@ Form Customisation Release: YYMMDD
 <!-- Execute list-specific routines. -->
 <script>
 
-  /**
-   * Set list-specific global variables (note that double-underscore global
-   * variables are found in vf-sp.js).
-   */
+  // Set list-specific global variables (note that double-underscore global
+  // variables are found in vf-sp.js).
   var _checkingForPulse=true; // Set to false after initial testing.
   var _isCustomLayoutUsed=false; // Set to false if no custom layout is used.
   var _itemID=""; // This will be made known on DispForm and EditForm.
@@ -30,130 +28,102 @@ Form Customisation Release: YYMMDD
   var _itemTitle=""; // See Note 2.
   var _userSetTitle=""; // See Note 3.
 
-  /**
-   * [Function] Conditionally customise fields. This function applies to edit
-   * mode only, and may be triggered multiple times as user input changes.
-   */
+  //--
+  // [Function] Conditionally customise fields. This function applies to edit
+  // mode only, and may be triggered multiple times as user input changes.
+  //--
   function conditionallyCustomiseFields() {
 
-    /**
-     * Example:
-     */
+    //-- Example:
     //if (jQuery("input[title='"+_labelListField2+"']").val()=="") {
     //  jQuery("span[id^='formListField3']").show();
     //} else jQuery("span[id^='formListField3']").hide();
 
   } // end of function conditionallyCustomiseFields()
 
-  /**
-   * [Function] Prepare form elements for view mode. This function is designed
-   * to run once per page load.
-   */
+  //--
+  // [Function] Prepare form elements for view mode. This function is designed
+  // to run once per page load.
+  //--
   function definePresentationLogicForViewMode() {
 
-    /**
-     * Example:
-     */
+    //-- Example:
     //jQuery(__field+"('"+_lableTitle+"')").closest("tr").hide();
 
   } // end of function definePresentationLogicForViewMode()
 
-  /**
-   * [Function] Prepare form elements for edit mode. This function is designed
-   * to run once per page load.
-   */
+  //--
+  // [Function] Prepare form elements for edit mode. This function is designed
+  // to run once per page load.
+  //--
   function definePresentationLogicForEditMode() {
 
-    /**
-     * Define actions that take place only during form intialisation.
-     * For example:
-     */
+    // Define actions that take place only during form intialisation.
+    // For example:
     //jQuery(__field+"('"+_labelListField2+"')").closest("tr").hide();
 
-    /**
-     * Also ensure that fields behave according to the current state of the
-     * list item, be it an existing one or a new one.
-     */
+    // Also ensure that fields behave according to the current state of the
+    // list item, be it an existing one or a new one.
     conditionallyCustomiseFields();
   } // end of function definePresentationLogicForEditMode()
 
-  /**
-   * [Function] Initialise form elements. This function is triggered once per
-   * page load.
-   */
+  //--
+  // [Function] Initialise form elements. This function is triggered once per
+  // page load.
+  //--
   function initialiseForm() {
 
-    /**
-     * Apply a custom form layout if instructed to do so.
-     */
-     if (_isCustomLayoutUsed) {
+    // Apply a custom form layout if instructed to do so.
+    if (_isCustomLayoutUsed) {
       vfApplyCustomLayout();
       jQuery("div#formWithCustomLayout").show();
     }
 
-    /**
-     * Control the visibility of edit mode-only elements.
-     */
+    // Control the visibility of edit mode-only elements.
     jQuery(".editMode").hide();
     if (__formMode>=1) jQuery(".editMode").show();
 
-    /**
-     * On DispForm and EditForm, read in the item's internal ID in case it
-     * needs to be readily available to the user.
-     */
+    // On DispForm and EditForm, read in the item's internal ID in case it
+    // needs to be readily available to the user.
     if ((__formMode==0)||(__formMode==2)) {
       _itemID=vfGetUrlParameter("ID");
 
-      /**
-       * (If no custom layout is used) optionally place the ID immediately
-       * above or below an existing field. In the following example, ID is
-       * placed just above Title.
-       */
+      // (If no custom layout is used) optionally place the ID immediately
+      // above or below an existing field. In the following example, ID is
+      // placed just above Title.
       //jQuery(__field+"('"+_lableTitle+"')").closest("tr").find(
       //  "td.ms-formbody"
       //).prepend(
       //  "Request ID "+_itemID+"<br /><br />"
       //); // Note that <br /> is necessary only if Title is to remain visible.
 
-      /**
-       * (If a custom layout is used) optionally place the item ID inside a
-       * designated span tag, as shown in the following example.
-       */
+      // (If a custom layout is used) optionally place the item ID inside a
+      // designated span tag, as shown in the following example.
       //jQuery("span[id='formItemID']").append(_itemID);
 
     } // end of if ((__formMode==0)||(__formMode==2))
 
-    /**
-     * Initialise the form in view mode (DispForm.aspx).
-     */
+    // Initialise the form in view mode (DispForm.aspx).
     if (__formMode==0) {
       definePresentationLogicForViewMode();
     } // end of if (__formMode==0)
 
-    /**
-     * Initialise the form in edit mode (NewForm.aspx and EditForm.aspx).
-     */
+    // Initialise the form in edit mode (NewForm.aspx and EditForm.aspx).
     if (__formMode>=1) {
       definePresentationLogicForEditMode();
 
-      /**
-       * Further initialise NewForm.aspx if necessary.
-       */
+      // Further initialise NewForm.aspx if necessary.
       if (__formMode==1) {
 
-        /**
-         * On NewForm.aspx, no item ID is available; as such, hide the
-         * placeholder if a custom form layout has one. Also hide any fields
-         * whose values cannot be determined by the user at the time of
-         * creating an item.
-         */
+        // On NewForm.aspx, no item ID is available; as such, hide the
+        // placeholder if a custom form layout has one. Also hide any fields
+        // whose values cannot be determined by the user at the time of
+        // creating an item.
         //jQuery("span[id^='formItemID']").hide();
 
       } // end of if (__formMode==1)
 
-      /**
-       * Further initialise EditForm.aspx if necessary.
-       */
+      // Further initialise EditForm.aspx if necessary.
       if (__formMode==2) {
         _itemTitle=vfSanitiseText(
           jQuery("input[title='"+_lableTitle+"']").val()
@@ -162,36 +132,32 @@ Form Customisation Release: YYMMDD
     } // end of if (__formMode>=1)
   } // end of function initialiseForm()
 
-  /**
-   * [Function] Register form events. Events in this function are registered
-   * once per page load.
-   */
+  //--
+  // [Function] Register form events. Events in this function are registered
+  // once per page load.
+  //--
   function registerFormEvents() {
 
-    /**
-     * Define events for view mode.
-     */
+    // Define events for view mode.
     if (__formMode==0) {
 
-      /**
-       * [Event] Pressing ESC closes a modal pop-up if present. This is not
-       * applicable to the current release of Vanilla Fix, but may be used
-       * agian if pop-ups are re-introduced at some point in the future.
-       */
+      //--
+      // [Event] Pressing ESC closes a modal pop-up if present. This is not
+      // applicable to the current release of Vanilla Fix, but may be used
+      // again if pop-ups are re-introduced at some point in the future.
+      //--
       jQuery(document).on("keydown",function (e) {
         var keyCode=(e.keyCode)||(e.which);
         if (keyCode==27) jQuery("div[id^='popup']").hide();
       }); // end of Pressing ESC
     } // end of if (__formMode==0)
 
-    /**
-     * Define events for edit mode.
-     */
+    // Define events for edit mode.
     if (__formMode>=1) {
 
-      /**
-       * [Event] Example event
-       */
+      //--
+      // [Event] Example event
+      //--
       //jQuery("input[title='"+_lableTitle+"']").on("change",function () {
       //  _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
       //  conditionallyCustomiseFields(); // ...and/or other actions as needed
@@ -200,9 +166,9 @@ Form Customisation Release: YYMMDD
     } // end of if (__formMode>=1)
   } // end of function registerFormEvents()
 
-  /**
-   * [Function] Render the form. This function is triggered once per page load.
-   */
+  //--
+  // [Function] Render the form. This function is triggered once per page load.
+  //--
   function renderForm() {
     initialiseForm();
     registerFormEvents();
@@ -212,27 +178,23 @@ Form Customisation Release: YYMMDD
     }
   } // end of function renderForm()
 
-  /**
-   * [SharePoint] Execute on page load.
-   */
+  //--
+  // [SharePoint] Execute on page load.
+  //--
   _spBodyOnLoadFunctionNames.push("renderForm");
 
-  /**
-   * [SharePoint] Perform validation upon save. This function kicks in only in
-   * edit mode, that is, __formMode>=1.
-   */
+  //--
+  // [SharePoint] Perform validation upon save. This function kicks in only in
+  // edit mode, that is, __formMode>=1.
+  //--
   function PreSaveItem() {
 
-    /**
-     * Read in user input at Save for validation and further processing.
-     */
+    // Read in user input at Save for validation and further processing.
     _userSetTitle=vfSanitiseText(
       jQuery("input[title='"+_lableTitle+"']").val()
     );
 
-    /**
-     * Example validation:
-     */
+    //-- Example validation:
     //if (_userSetTitle=="") {
     //  alert("Title cannot be left blank.");
     //  jQuery("input[title='"+_lableTitle+"']").focus();
