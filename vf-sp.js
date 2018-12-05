@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181129
+ * Base Release: 181205
  */
 
 // Check for required libraries.
@@ -22,6 +22,7 @@ var __daysOfWeek=[
   "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
 ];
 var __field=".ms-standardheader:contains";
+var __fieldValue="td.ms-formbody";
 var __formMode=-1; // 0: DispForm | 1: NewForm | 2: EditForm | -1: Unknown
 if (__currentURL.indexOf("DispForm.aspx")>=0) __formMode=0;
 else if (__currentURL.indexOf("NewForm.aspx")>=0) __formMode=1;
@@ -35,7 +36,8 @@ var __regExEmail=/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\")
 var __respondToPulseCheck="Vanilla Fix is in place."
 +" When you see this message on all three .aspx forms of this list/library,"
 +" set _checkingForPulse to false and get on with customisation.";
-var __spanAsterisk="<span class='editMode bold red'>"+__markAsterisk+"</span>";
+var __spanAsterisk="<span class='editMode ms-accentText'>"+__markAsterisk
++"</span>";
 
 //--
 // [Common Function] Sanitise a string by removing all whitespaces, tab
