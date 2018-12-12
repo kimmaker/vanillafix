@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: List-Independent Functions and Variables
  * http://vanillafix.com
  *
- * Base Release: 181205
+ * Base Release: 181212
  */
 
 // Check for required libraries.
@@ -43,8 +43,11 @@ var __spanAsterisk="<span class='editMode ms-accentText'>"+__markAsterisk
 // [Common Function] Sanitise a string by removing all whitespaces, tab
 // stops, and new-line characters.
 //--
-function vfSanitiseText(theText) {
+function vfS(theText) {
   return jQuery.trim(theText).replace(/(\r\n|\n|\r|\t)/gm,"");
+} // end of function vfS(1)
+function vfSanitiseText(theText) { // for backward compatibility
+  return vfS(theText);
 } // end of function vfSanitiseText(1)
 
 //--
@@ -191,7 +194,7 @@ function vfConvertToSortableTime(
   if (theSeparatorInInput===undefined) theSeparatorInInput=":";
   var defaultTime="00"+theSeparatorInInput+"00";
   if (theTime===undefined) return defaultTime;
-  theTime=vfSanitiseText(theTime);
+  theTime=vfS(theTime);
   var theTimeDigits=theTime.match(/[0-9]/g).toString().replace(/[,]/g,"");
   var timeH,timeM;
   var indicatorAmPm="";
@@ -260,7 +263,7 @@ function vfConvertToSortableDate(theDate,theSeparator,theLocale) {
   if (theSeparator===undefined) theSeparator="/";
   if (theSeparator.length>1) return defaultYMD;
   if (theDate===undefined) return defaultYMD;
-  theDate=vfSanitiseText(theDate);
+  theDate=vfS(theDate);
   var arrDate=theDate.split(theSeparator);
   if (arrDate.length!=3) return defaultYMD;
   if (arrDate[0].length==1) arrDate[0]="0"+arrDate[0];
@@ -292,7 +295,7 @@ function vfAssembleTimeOfDayString(theFieldLabel,theSeparator) {
     hPortion=hPortion.replace(/[^\d]/g,"");
   }
   assembledString=hPortion+theSeparator+mPortion+indicatorAmPm;
-  return vfSanitiseText(assembledString);
+  return vfS(assembledString);
 } // end of function vfAssembleTimeOfDayString(2)
 
 //--

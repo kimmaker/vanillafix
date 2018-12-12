@@ -125,9 +125,7 @@ Form Customisation Release: YYMMDD
 
       // Further initialise EditForm.aspx if necessary.
       if (__formMode==2) {
-        _itemTitle=vfSanitiseText(
-          jQuery("input[title='"+_lableTitle+"']").val()
-        );
+        _itemTitle=vfS(jQuery("input[title='"+_lableTitle+"']").val());
       } // end of if (__formMode==2)
     } // end of if (__formMode>=1)
   } // end of function initialiseForm()
@@ -190,9 +188,7 @@ Form Customisation Release: YYMMDD
   function PreSaveItem() {
 
     // Read in user input at Save for validation and further processing.
-    _userSetTitle=vfSanitiseText(
-      jQuery("input[title='"+_lableTitle+"']").val()
-    );
+    _userSetTitle=vfS(jQuery("input[title='"+_lableTitle+"']").val());
 
     //-- Example validation:
     //if (_userSetTitle=="") {
