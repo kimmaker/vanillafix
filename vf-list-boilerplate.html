@@ -2,9 +2,6 @@
 Vanilla Fix for SharePoint: Form Customisation
 http://vanillafix.com
 
-Site: [Name of Site]
-List: [Name of List or Library]
-
 Form Customisation Release: YYMMDD
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
@@ -16,10 +13,15 @@ Form Customisation Release: YYMMDD
 <!-- Execute list-specific routines. -->
 <script>
 
-  // Set list-specific global variables (note that double-underscore global
-  // variables are found in vf-sp.js).
-  var _checkingForPulse=true; // Set to false after initial testing.
-  var _isCustomLayoutUsed=false; // Set to false if no custom layout is used.
+  // Configure the VanillaFix object.
+  vf.platformVersion="Online"; // "Online", "2016", "2013", or "2010"
+  vf.siteName="My SharePoint Site";
+  vf.listName="My SharePoint List";
+  vf.locale="en-AU"; // for example, "en-AU"
+  vf.isCustomLayoutUsed=true; // See https://kimmaker.com/doc/211
+  vf.pulseCheck=false; // Switch to false after initial testing.
+
+  // Set list-specific variables.
   var _itemID=""; // This will be made known on DispForm and EditForm.
   var _lableTitle="Title"; // See Note 1.
   var _labelListField2="Second Field in List"; // See Note 1.
@@ -28,169 +30,174 @@ Form Customisation Release: YYMMDD
   var _itemTitle=""; // See Note 2.
   var _userSetTitle=""; // See Note 3.
 
-  //--
+  //-----------------------------------------------------------------------
   // [Function] Conditionally customise fields. This function applies to edit
   // mode only, and may be triggered multiple times as user input changes.
-  //--
   function conditionallyCustomiseFields() {
 
-    //-- Example:
+    // Example:
+    //
     //if (jQuery("input[title='"+_labelListField2+"']").val()=="") {
     //  jQuery("span[id^='formListField3']").show();
     //} else jQuery("span[id^='formListField3']").hide();
 
   } // end of function conditionallyCustomiseFields()
 
-  //--
+  //-----------------------------------------------------------------------
   // [Function] Prepare form elements for view mode. This function is designed
   // to run once per page load.
-  //--
   function definePresentationLogicForViewMode() {
 
-    //-- Example:
-    //jQuery(__field+"('"+_lableTitle+"')").closest("tr").hide();
+    // Example:
+    //
+    //jQuery(vf.getField(_lableTitle)).closest("tr").hide();
 
   } // end of function definePresentationLogicForViewMode()
 
-  //--
+  //-----------------------------------------------------------------------
   // [Function] Prepare form elements for edit mode. This function is designed
   // to run once per page load.
-  //--
   function definePresentationLogicForEditMode() {
 
     // Define actions that take place only during form intialisation.
     // For example:
-    //jQuery(__field+"('"+_labelListField2+"')").closest("tr").hide();
+    //
+    //jQuery(vf.getField(_labelListField2)).closest("tr").hide();
+
+    // NewForm.aspx only: if a custom layout is used, hide Item ID.
+    if (vf.formMode==1) {
+      if (vf.isCustomLayoutUsed) {
+        jQuery("span[id^='formItemID']").hide("");
+      }
+    }
 
     // Also ensure that fields behave according to the current state of the
     // list item, be it an existing one or a new one.
     conditionallyCustomiseFields();
   } // end of function definePresentationLogicForEditMode()
 
-  //--
+  //-----------------------------------------------------------------------
   // [Function] Initialise form elements. This function is triggered once per
   // page load.
-  //--
   function initialiseForm() {
 
     // Apply a custom form layout if instructed to do so.
-    if (_isCustomLayoutUsed) {
-      vfApplyCustomLayout();
+    if (vf.isCustomLayoutUsed) {
+      vf.applyCustomLayout();
       jQuery("div#formWithCustomLayout").show();
     }
 
     // Control the visibility of edit mode-only elements.
     jQuery(".editMode").hide();
-    if (__formMode>=1) jQuery(".editMode").show();
+    if (vf.formMode>=1) jQuery(".editMode").show();
 
     // On DispForm and EditForm, read in the item's internal ID in case it
     // needs to be readily available to the user.
-    if ((__formMode==0)||(__formMode==2)) {
-      _itemID=vfGetUrlParameter("ID");
+    if ((vf.formMode==0)||(vf.formMode==2)) {
+      _itemID=vf.getUrlParameter("ID");
 
       // (If no custom layout is used) optionally place the ID immediately
       // above or below an existing field. In the following example, ID is
       // placed just above Title.
-      //jQuery(__field+"('"+_lableTitle+"')").closest("tr").find(
-      //  "td.ms-formbody"
-      //).prepend(
-      //  "Request ID "+_itemID+"<br /><br />"
-      //); // Note that <br /> is necessary only if Title is to remain visible.
+      //
+      //jQuery(vf.getField(_lableTitle)).closest("tr").find(
+      //  vf.fieldValue
+      //).prepend("Item ID "+_itemID+"<br /><br />");
+      //
+      // Note that <br /> is necessary only if Title is to remain visible.
 
       // (If a custom layout is used) optionally place the item ID inside a
       // designated span tag, as shown in the following example.
-      //jQuery("span[id='formItemID']").append(_itemID);
-
-    } // end of if ((__formMode==0)||(__formMode==2))
+      if (vf.isCustomLayoutUsed) {
+        jQuery("span[id='formItemID']").append(_itemID);
+      }
+    } // end of if ((vf.formMode==0)||(vf.formMode==2))
 
     // Initialise the form in view mode (DispForm.aspx).
-    if (__formMode==0) {
+    if (vf.formMode==0) {
       definePresentationLogicForViewMode();
-    } // end of if (__formMode==0)
+    } // end of if (vf.formMode==0)
 
     // Initialise the form in edit mode (NewForm.aspx and EditForm.aspx).
-    if (__formMode>=1) {
+    if (vf.formMode>=1) {
       definePresentationLogicForEditMode();
 
       // Further initialise NewForm.aspx if necessary.
-      if (__formMode==1) {
+      if (vf.formMode==1) {
 
         // On NewForm.aspx, no item ID is available; as such, hide the
         // placeholder if a custom form layout has one. Also hide any fields
         // whose values cannot be determined by the user at the time of
         // creating an item.
+        //
         //jQuery("span[id^='formItemID']").hide();
 
-      } // end of if (__formMode==1)
+      } // end of if (vf.formMode==1)
 
       // Further initialise EditForm.aspx if necessary.
-      if (__formMode==2) {
-        _itemTitle=vfS(jQuery("input[title='"+_lableTitle+"']").val());
-      } // end of if (__formMode==2)
-    } // end of if (__formMode>=1)
+      if (vf.formMode==2) {
+        _itemTitle=vf.getText(jQuery("input[title='"+_lableTitle+"']").val());
+      } // end of if (vf.formMode==2)
+    } // end of if (vf.formMode>=1)
   } // end of function initialiseForm()
 
-  //--
+  //-----------------------------------------------------------------------
   // [Function] Register form events. Events in this function are registered
   // once per page load.
-  //--
   function registerFormEvents() {
 
     // Define events for view mode.
-    if (__formMode==0) {
+    if (vf.formMode==0) {
 
-      //--
+      //...................................................................
       // [Event] Pressing ESC closes a modal pop-up if present. This is not
       // applicable to the current release of Vanilla Fix, but may be used
       // again if pop-ups are re-introduced at some point in the future.
-      //--
-      jQuery(document).on("keydown",function (e) {
+      jQuery(document).on("keydown",function(e) {
         var keyCode=(e.keyCode)||(e.which);
         if (keyCode==27) jQuery("div[id^='popup']").hide();
       }); // end of Pressing ESC
-    } // end of if (__formMode==0)
+    } // end of if (vf.formMode==0)
 
     // Define events for edit mode.
-    if (__formMode>=1) {
+    if (vf.formMode>=1) {
 
-      //--
+      //...................................................................
       // [Event] Example event
-      //--
-      //jQuery("input[title='"+_lableTitle+"']").on("change",function () {
+      //
+      //jQuery("input[title='"+_lableTitle+"']").on("change",function() {
       //  _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
       //  conditionallyCustomiseFields(); // ...and/or other actions as needed
       //}); // end of Example event
 
-    } // end of if (__formMode>=1)
+    } // end of if (vf.formMode>=1)
   } // end of function registerFormEvents()
 
-  //--
+  //-----------------------------------------------------------------------
   // [Function] Render the form. This function is triggered once per page load.
-  //--
   function renderForm() {
+    console.log(vf.renderingStarted);
     initialiseForm();
     registerFormEvents();
-    jQuery(__listForm).delay(500).fadeIn(500);
-    if (_checkingForPulse) {
-      setTimeout(function() { alert(__respondToPulseCheck); },500);
-    }
+    jQuery(vf.listForm).delay(500).fadeIn(500);
+    if (vf.pulseCheck) { setTimeout(function() { alert(vf.gotPulse); },500); }
+    console.log(vf.renderingCompleted);
   } // end of function renderForm()
 
-  //--
+  //-----------------------------------------------------------------------
   // [SharePoint] Execute on page load.
-  //--
   _spBodyOnLoadFunctionNames.push("renderForm");
 
-  //--
+  //-----------------------------------------------------------------------
   // [SharePoint] Perform validation upon save. This function kicks in only in
-  // edit mode, that is, __formMode>=1.
-  //--
+  // edit mode, that is, vf.formMode>=1.
   function PreSaveItem() {
 
     // Read in user input at Save for validation and further processing.
-    _userSetTitle=vfS(jQuery("input[title='"+_lableTitle+"']").val());
+    _userSetTitle=vf.getText(jQuery("input[title='"+_lableTitle+"']").val());
 
-    //-- Example validation:
+    // Example validation:
+    //
     //if (_userSetTitle=="") {
     //  alert("Title cannot be left blank.");
     //  jQuery("input[title='"+_lableTitle+"']").focus();
@@ -225,10 +232,10 @@ Form Customisation Release: YYMMDD
 
 
 
-<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::F:::::::::: -->
-<!-- CUSTOM FORM LAYOUT (visible if _isCustomLayoutUsed is set to true) -->
+<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+<!-- CUSTOM FORM LAYOUT (visible if vf.isCustomLayoutUsed is set to true) -->
 <div id="formWithCustomLayout" class="formWrapper">
-  <div class="formDivRow borderTop">
+  <div class="formDivRow">
     <div id="formSection1Row1Col1" class="formDiv1Col">
       <span id="formHeading1" class="customLayoutSectionTitle">
         Form Section 1 Heading
@@ -252,19 +259,26 @@ Form Customisation Release: YYMMDD
       <span id="formItemID"></span>
     </div>
   </div>
+  <div class="formDivRow borderTop">
+    <div id="formSection1Row3Col1" class="formDiv1Col">
+      <span id="formHeading2" class="customLayoutSectionTitle">
+        Form Section 2 Heading
+      </span>
+    </div>
+  </div>
   <div class="formDivRow">
-    <div id="formSection1Row3Col1" class="formDiv2Col">
+    <div id="formSection1Row4Col1" class="formDiv2Col">
       <p><span id="formListField2Label">
-        <strong>List Field 2</strong>
+        <strong>Mandatory List Field 2</strong>
         <span class="editMode bold red">*</span>
       </span></p>
       <span id="formListField2" class="customLayout"
         data-displayName="Second Field in List"
       ></span>
     </div>
-    <div id="formSection1Row3Col2" class="formDiv2Col">
+    <div id="formSection1Row4Col2" class="formDiv2Col">
       <p><span id="formListField3Label">
-        <strong>List Field 3</strong>
+        <strong>Optional List Field 3</strong>
       </span></p>
       <span id="formListField3" class="customLayout"
         data-displayName="Third Field in List"
