@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Base Release: 181215
+ * Base Release: 181217
  */
 
 // Check for required libraries.
@@ -26,8 +26,8 @@ class VanillaFix {
     else this._pulseCheck=Boolean(objectPulseCheck);
     if (objectIsCustomLayoutUsed===undefined) this._isCustomLayoutUsed=false;
     else this._isCustomLayoutUsed=Boolean(objectIsCustomLayoutUsed);
-    if (objectLocale===undefined) this._Locale="en-AU";
-    else this._locale=this.getText(objectLocale);
+    if (objectLocale===undefined) this._locale="en-AU";
+    else this._locale=this.getLocaleCode(objectLocale);
     if (objectListName===undefined) this._listName="SharePoint List";
     else this._listName=this.getText(objectListName);
     if (objectSiteName===undefined) this._siteName="SharePoint Site";
@@ -40,13 +40,17 @@ class VanillaFix {
   get objectDate() { return this._objectDate; }
   get objectDateAt0000() { return this._objectDate.setHours(0,0,0,0); }
   get platformVersion() { return this._platformVersion; }
-  set platformVersion(v) { this._platformVersion=this.getText(v); }
+  set platformVersion(v) {
+    if ((v=="2016")||(v=="2013")||(v=="2010")) {
+      this._platformVersion=this.getText(v);
+    } else this._platformVersion="Online";
+  }
   get siteName() { return this._siteName; }
   set siteName(v) { this._siteName=this.getText(v); }
   get listName() { return this._listName; }
   set listName(v) { this._listName=this.getText(v); }
   get locale() { return this._locale; }
-  set locale(v) { this._locale=this.getText(v); }
+  set locale(v) { this._locale=this.getLocaleCode(v); }
   get isCustomLayoutUsed() { return this._isCustomLayoutUsed; }
   set isCustomLayoutUsed(v) { this._isCustomLayoutUsed=Boolean(v); }
   get pulseCheck() { return this._pulseCheck; }
@@ -132,6 +136,20 @@ class VanillaFix {
       default: return this.field+"('"+theFieldLabel+"')";
     }
   } // end of getField(1)
+
+  // [VF Method] Extract a locale code (language and region) out of a string.
+  getLocaleCode(theLanguageAndRegion) {
+    var defaultCode="en-AU";
+    theLanguageAndRegion=this.getText(theLanguageAndRegion);
+    if (theLanguageAndRegion.length!=5) return defaultCode;
+    theLanguageAndRegion=theLanguageAndRegion.replace("_","-");
+    var c=theLanguageAndRegion.split("-");
+    if (c.length!=2) return defaultCode;
+    var code=c[0].toString().toLowerCase()+"-"+c[1].toString().toUpperCase();
+    var pattern=/^[a-z]{2}-[A-Z]{2}$/g;
+    if (pattern.test(code)==false) return defaultCode;
+    else return code;
+  } // end of getLocaleCode(1)
 
   // [VF Method] Get the specified parameter from the query string. This
   // method is based on ideas from: https://kimmaker.com/ref/505
@@ -384,10 +402,10 @@ var vf=new VanillaFix();
 
 //-------------------------------------------------------------------------
 // [VARIABLES AND FUNCTIONS FOR BACKWARD COMPATIBILITY]
-// Note. Below is necessary only for vf-list-{name}.html that uses vf-sp.js
-// Release 181210 or older. If you are currently transitioning from legacy
-// Vanilla Fix to object-oriented Vanilla Fix, be sure to remove dependencies
-// on these variables and functions.
+// Note. Below is necessary only if your vf-list-{name}.html initially
+// targeted vf-sp.js Release 181210 or older. If you are currently
+// transitioning from legacy Vanilla Fix to object-oriented Vanilla Fix, be
+// sure to remove dependencies on these variables and functions.
 var __currentDate=vf.objectDateAt0000;
 var __currentTimeZone=vf.currentTimeZone;
 var __currentURL=vf.formUrl;
