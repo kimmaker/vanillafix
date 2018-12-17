@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Class Release: 181221
+ * Class Release: 181222
  */
 
 
@@ -142,21 +142,20 @@ class VanillaFix {
   //=======================================================================
   // [CLASS METHOD] Print the key properties of the instantiated VanillaFix
   // object for logging.
-  obtainObjectSignature() {
-    var output="Vanilla Fix Object Properties"
-    output+="\n+ Instantiated: "+this.objectDate.toString();
-    output+="\n+ Target SharePoint platform: "+this.platformVersion;
-    output+="\n+ Locale applied to object: "+this.locale;
-    output+="\n+ Site identified as: "+this.siteName;
-    output+="\n+ List identified as: "+this.listName;
-    output+="\n+ Custom form layout: "+this.isCustomLayoutUsed;
-    output+="\n+ Form mode: "+this.formMode+" ("+this.formModeLiteral+")";
-    output+="\n+ URL: "+this.formUrl.replace(this.queryString,"")+"\n  ";
-    output+=unescape(
-      this.queryString.replace("?","").replace(/&/g,"\n  ").replace(/=/g," = ")
+  produceSignature() {
+    return ":::::::::::\nVanilla Fix Object"
+    +"\n+ Instantiated on: "+this.objectDate.toString()
+    +"\n+ Target platform: "+this.platformVersion
+    +"\n+ Locale applied: "+this.locale
+    +"\n+ Site described as: "+this.siteName
+    +"\n+ List described as: "+this.listName
+    +"\n+ Custom form layout: "+this.isCustomLayoutUsed
+    +"\n+ Form mode: "+this.formMode+" ("+this.formModeLiteral+")"
+    +"\n+ VF URL: "+this.formUrl.replace(this.queryString,"")
+    +"\n+ "+unescape(
+      this.queryString.replace("?","").replace(/&/g,"\n+ ").replace(/=/g,": ")
     );
-    return output;
-  } // end of getObjectSignature()
+  } // end of produceSignature()
 
   //=======================================================================
   // [CLASS METHOD] Sanitise text input.
