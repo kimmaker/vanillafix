@@ -2,14 +2,15 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Base Release: 181218
+ * Base Release: 181219
  */
 
 // Check for required libraries.
 if (typeof jQuery==='undefined') {
+  console.log("Vanilla Fix requires jQuery.");
   alert("Oops! A required JavaScript library is not loaded.");
   window.open("","_self").close();
-} else console.log("Found jQuery "+jQuery.fn.jquery);
+} else console.log("Found jQuery "+jQuery.fn.jquery+".");
 
 // Define the VanillaFix class.
 class VanillaFix {
@@ -107,7 +108,7 @@ class VanillaFix {
   } // usage: if (vf.regExEmail.test(theTestString)==false) alert("Invalid");
   get renderingCompleted() {
     switch(this.locale) {
-      default: return "Vanilla Fix completed rendering the form.";
+      default: return "Vanilla Fix finished rendering the form.";
     }
   }
   get renderingStarted() {
@@ -136,7 +137,7 @@ class VanillaFix {
   // [VF Method] Build a jQuery selector for the specified field.
   getField(theFieldLabel) {
     if (theFieldLabel===undefined) {
-      return this.field+"('Error: Field label not specified')";
+      return this.field+"('Oops - please provide a field label.')";
     }
     switch(this.platformVersion) {
       default: return this.field+"('"+theFieldLabel+"')";
@@ -179,58 +180,6 @@ class VanillaFix {
   //
   // This method is based on ideas from: https://kimmaker.com/ref/501
   // and is further documented at: https://kimmaker.com/doc/211
-  //
-  // Below is an example HTML form structure that contains a custom layout.
-  // Important: All 'span' tags that represent a field must contain
-  // 'class="customLayout"' and 'data-displayName' attributes. All other
-  // attributes are optional.
-  /*
-  <div id="formWithCustomLayout" class="formWrapper">
-    <div class="formDivRow borderTop">
-      <div id="formSection1Row1Col1" class="formDiv1Col">
-        <span id="formHeading1" class="customLayoutSectionTitle">
-          Form Section 1 Heading
-        </span>
-      </div>
-    </div>
-    <div class="formDivRow">
-      <div id="formSection1Row2Col1" class="formDiv2Col">
-        <p><span id="formTitleLabel">
-          <strong>Title</strong>
-          <span class="editMode bold red">*</span>
-        </span></p>
-        <span id="formTitle" class="customLayout"
-          data-displayName="Title"
-        ></span>
-      </div>
-      <div id="formSection1Row2Col2" class="formDiv2Col">
-        <p><span id="formItemIDLabel">
-          <strong>ID</strong>
-        </span></p>
-        <span id="formItemID"></span>
-      </div>
-    </div>
-    <div class="formDivRow">
-      <div id="formSection1Row3Col1" class="formDiv2Col">
-        <p><span id="formListField2Label">
-          <strong>List Field 2</strong>
-          <span class="editMode bold red">*</span>
-        </span></p>
-        <span id="formListField2" class="customLayout"
-          data-displayName="Second Field in List"
-        ></span>
-      </div>
-      <div id="formSection1Row3Col2" class="formDiv2Col">
-        <p><span id="formListField3Label">
-          <strong>List Field 3</strong>
-        </span></p>
-        <span id="formListField3" class="customLayout"
-          data-displayName="Third Field in List"
-        ></span>
-      </div>
-    </div>
-  </div>
-  */
   applyCustomLayout() {
     jQuery(".ms-formtable").hide();
     jQuery("span.customLayout").each(function() {
