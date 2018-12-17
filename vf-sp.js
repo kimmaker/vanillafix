@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Base Release: 181219
+ * Base Release: 181220
  */
 
 // Check for required libraries.
@@ -131,16 +131,14 @@ class VanillaFix {
   // [VF Method] Sanitise text input.
   getText(theInput) {
     if (theInput===undefined) return "";
-    else return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
+    return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
   } // end of getText(1)
 
   // [VF Method] Build a jQuery selector for the specified field.
-  getField(theFieldLabel) {
-    if (theFieldLabel===undefined) {
-      return this.field+"('Oops - please provide a field label.')";
-    }
+  getField(theLabel) {
+    if (theLabel===undefined) return this.field+"('undefined')";
     switch(this.platformVersion) {
-      default: return this.field+"('"+theFieldLabel+"')";
+      default: return this.field+"('"+theLabel+"')";
     }
   } // end of getField(1)
 
@@ -169,15 +167,7 @@ class VanillaFix {
     return results===null?'':decodeURIComponent(results[1].replace(/\+/g,' '));
   } // end of getUrlParameter(1)
 
-  // [VF Method] Apply a custom layout to a SharePoint list form. This
-  // method first hides the native form and then moves its contents over to
-  // designated placeholders inside a custom form structure (layout).
-  //
-  // While the use of this method is strictly optional, it can overcome the
-  // linear one-field-per-row layout built into every out-of-the-box SharePoint
-  // list form, that is, without relying on tools such as InfoPath, Nintex
-  // Forms, or SharePoint Designer.
-  //
+  // [VF Method] Apply a custom layout to a SharePoint list form.
   // This method is based on ideas from: https://kimmaker.com/ref/501
   // and is further documented at: https://kimmaker.com/doc/211
   applyCustomLayout() {
