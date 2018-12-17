@@ -2,9 +2,12 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Base Release: 181220
+ * Class Release: 181221
  */
 
+
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // Check for required libraries.
 if (typeof jQuery==='undefined') {
   console.log("Vanilla Fix requires jQuery.");
@@ -12,6 +15,9 @@ if (typeof jQuery==='undefined') {
   window.open("","_self").close();
 } else console.log("Found jQuery "+jQuery.fn.jquery+".");
 
+
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // Define the VanillaFix class.
 class VanillaFix {
   constructor(
@@ -34,18 +40,14 @@ class VanillaFix {
     if (objectSiteName===undefined) this._siteName="SharePoint Site";
     else this._siteName=this.getText(objectSiteName);
     if (objectPlatformVersion===undefined) this._platformVersion="Online";
-    else this._platformVersion=this.getText(objectPlatformVersion);
+    else this._platformVersion=this.getPlatformVersion(objectPlatformVersion);
   } // end of constructor
 
-  // [Properties]
+  //=======================================================================
+  // [BASIC PROPERTIES]
   get objectDate() { return this._objectDate; }
-  get objectDateAt0000() { return this._objectDate.setHours(0,0,0,0); }
   get platformVersion() { return this._platformVersion; }
-  set platformVersion(v) {
-    if ((v=="2016")||(v=="2013")||(v=="2010")) {
-      this._platformVersion=this.getText(v);
-    } else this._platformVersion="Online";
-  }
+  set platformVersion(v) { this._platformVersion=this.getPlatformVersion(v) }
   get siteName() { return this._siteName; }
   set siteName(v) { this._siteName=this.getText(v); }
   get listName() { return this._listName; }
@@ -58,11 +60,29 @@ class VanillaFix {
   set pulseCheck(v) { this._pulseCheck=Boolean(v); }
   get formUrl() { return window.location.href; }
   get queryString() { return window.location.search; }
+  get formMode() {
+    if (this.formUrl.indexOf("DispForm.aspx")>=0) return 0;
+    else if (this.formUrl.indexOf("NewForm.aspx")>=0) return 1;
+    else if (this.formUrl.indexOf("EditForm.aspx")>=0) return 2;
+    else return -1;
+  }
+  get formModeLiteral() {
+    if (this.formMode==0) return "DispForm.aspx";
+    else if (this.formMode==1) return "NewForm.aspx";
+    else if (this.formMode==2) return "EditForm.aspx";
+    else return "Unknown";
+  }
   get currentTimeZone() {
     return (
       (this.objectDate.toString()).match(/\((.*?)\)/g).toString()
     ).replace(/[()]/g,"");
   }
+  get regExEmail() {
+    return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  } // usage: if (vf.regExEmail.test(theTestString)==false) alert("Invalid");
+
+  //=======================================================================
+  // [PLATFORM- OR LOCALE-BASED PROPERTIES]
   get daysOfWeek() {
     switch(this.locale) {
       default: return [
@@ -79,12 +99,6 @@ class VanillaFix {
     switch(this.platformVersion) {
       default: return "td.ms-formbody";
     }
-  }
-  get formMode() {
-    if (this.formUrl.indexOf("DispForm.aspx")>=0) return 0;
-    else if (this.formUrl.indexOf("NewForm.aspx")>=0) return 1;
-    else if (this.formUrl.indexOf("EditForm.aspx")>=0) return 2;
-    else return -1;
   }
   get gotPulse() {
     switch(this.locale) {
@@ -103,9 +117,6 @@ class VanillaFix {
       default: return "IsDlg=1";
     }
   }
-  get regExEmail() {
-    return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  } // usage: if (vf.regExEmail.test(theTestString)==false) alert("Invalid");
   get renderingCompleted() {
     switch(this.locale) {
       default: return "Vanilla Fix finished rendering the form.";
@@ -128,21 +139,43 @@ class VanillaFix {
     }
   }
 
-  // [VF Method] Sanitise text input.
+  //=======================================================================
+  // [CLASS METHOD] Print the key properties of the instantiated VanillaFix
+  // object for logging.
+  obtainObjectSignature() {
+    var output="Vanilla Fix Object Properties"
+    output+="\n+ Instantiated: "+this.objectDate.toString();
+    output+="\n+ Target SharePoint platform: "+this.platformVersion;
+    output+="\n+ Locale applied to object: "+this.locale;
+    output+="\n+ Site identified as: "+this.siteName;
+    output+="\n+ List identified as: "+this.listName;
+    output+="\n+ Custom form layout: "+this.isCustomLayoutUsed;
+    output+="\n+ Form mode: "+this.formMode+" ("+this.formModeLiteral+")";
+    output+="\n+ URL: "+this.formUrl.replace(this.queryString,"")+"\n  ";
+    output+=unescape(
+      this.queryString.replace("?","").replace(/&/g,"\n  ").replace(/=/g," = ")
+    );
+    return output;
+  } // end of getObjectSignature()
+
+  //=======================================================================
+  // [CLASS METHOD] Sanitise text input.
   getText(theInput) {
     if (theInput===undefined) return "";
     return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
   } // end of getText(1)
 
-  // [VF Method] Build a jQuery selector for the specified field.
+  //=======================================================================
+  // [CLASS METHOD] Build a jQuery selector for the specified field.
   getField(theLabel) {
     if (theLabel===undefined) return this.field+"('undefined')";
     switch(this.platformVersion) {
-      default: return this.field+"('"+theLabel+"')";
+      default: return this.field+"('"+this.getText(theLabel)+"')";
     }
   } // end of getField(1)
 
-  // [VF Method] Extract a locale code (language and region) from a string.
+  //=======================================================================
+  // [CLASS METHOD] Extract a locale code (language and region) from a string.
   getLocaleCode(theLanguageAndRegion) {
     var defaultCode="en-AU";
     if (theLanguageAndRegion===undefined) return defaultCode;
@@ -157,7 +190,20 @@ class VanillaFix {
     else return code;
   } // end of getLocaleCode(1)
 
-  // [VF Method] Get the specified parameter from the query string. This
+  //=======================================================================
+  // [CLASS METHOD] Validate the specified platform version.
+  getPlatformVersion(theInput) {
+    var defaultPlatform="Online";
+    if (theInput===undefined) return defaultPlatform;
+    var platform=this.getText(theInput);
+    if ((platform=="2016")||(platform=="2013")||(platform=="2010")) {
+      return platform;
+    }
+    return defaultPlatform;
+  } // end of getPlatformVersion(1)
+
+  //=======================================================================
+  // [CLASS METHOD] Get the specified parameter from the query string. This
   // method is based on ideas from: https://kimmaker.com/ref/505
   getUrlParameter(theName) {
     if (theName===undefined) return "";
@@ -167,7 +213,8 @@ class VanillaFix {
     return results===null?'':decodeURIComponent(results[1].replace(/\+/g,' '));
   } // end of getUrlParameter(1)
 
-  // [VF Method] Apply a custom layout to a SharePoint list form.
+  //=======================================================================
+  // [CLASS METHOD] Apply a custom layout to a SharePoint list form.
   // This method is based on ideas from: https://kimmaker.com/ref/501
   // and is further documented at: https://kimmaker.com/doc/211
   applyCustomLayout() {
@@ -183,7 +230,8 @@ class VanillaFix {
     });
   } // end of applyCustomLayout()
 
-  // [VF Method] Append a specified series of characters, such as a space
+  //=======================================================================
+  // [CLASS METHOD] Append a specified series of characters, such as a space
   // followed by an asterisk, to a string if those characters are not already
   // present.
   appendCharacters(theString,theChars) {
@@ -195,7 +243,8 @@ class VanillaFix {
     return theString;
   } // end of appendCharacters(2)
 
-  // [VF Mdehod] Remove the last occurrence of a specified series of
+  //=======================================================================
+  // [CLASS METHOD] Remove the last occurrence of a specified series of
   // characters, such as a space followed by an asterisk, from a string.
   removeAppendedCharacters(theString,theChars) {
     if (theString===undefined) return "";
@@ -206,7 +255,8 @@ class VanillaFix {
     return theString;
   } // end of removeAppendedCharacters(2)
 
-  // [VF Method] Convert a SharePoint time string to a sortable 24-hour
+  //=======================================================================
+  // [CLASS METHOD] Convert a SharePoint time string to a sortable 24-hour
   // equivalent; for example, "11:00 PM" returns "23:00". The method also
   // works for strings that contain variations of English-language AM/PM
   // indications such as "a.m." and "p.m.". The default hour-minute
@@ -282,7 +332,8 @@ class VanillaFix {
     return timeH+theSeparatorOut+timeM;
   } // end of convertToSortableTime(3)
 
-  // [VF Method] Convert a conventional date string to YYYY-MM-DD;
+  //=======================================================================
+  // [CLASS METHOD] Convert a conventional date string to YYYY-MM-DD;
   // for example, "13/07/2019" returns "2019-07-13". An optional second
   // argument can specify what the day-month-year separator in the input
   // string is. If the second argument is not given, the method uses "/".
@@ -320,8 +371,9 @@ class VanillaFix {
     else return strYMD;
   } // end of convertToSortableDate(3)
 
-  // [VF Method] Extract HH:mm from a SharePoint time field. If the input time
-  // is in 12-hour format, also indicate AM or PM.
+  //=======================================================================
+  // [CLASS METHOD] Extract HH:mm from a SharePoint time field. If the input
+  // time is in 12-hour format, also indicate AM or PM.
   assembleTimeOfDayString(theFieldLabel,theSeparator) {
     if (theSeparator===undefined) theSeparator=":";
     if (theFieldLabel===undefined) return "";
@@ -342,19 +394,22 @@ class VanillaFix {
   } // end of assembleTimeOfDayString(2)
 } // end of class VanillaFix
 
-// Instantiate a default VanillaFix object. Individual editable properties can
-// be set in vf-list-{name}.html.
+
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+// Instantiate a default VanillaFix object. Individual editable properties
+// are set in vf-list-{name}.html.
 var vf=new VanillaFix();
 
 
 
-//-------------------------------------------------------------------------
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // [VARIABLES AND FUNCTIONS FOR BACKWARD COMPATIBILITY]
 // Note. Below is necessary only if your vf-list-{name}.html initially
 // targeted vf-sp.js Release 181210 or older. If you are currently
 // transitioning from legacy Vanilla Fix to object-oriented Vanilla Fix, be
 // sure to remove dependencies on these variables and functions.
-var __currentDate=vf.objectDateAt0000;
+var __currentDate=vf.objectDate;
 var __currentTimeZone=vf.currentTimeZone;
 var __currentURL=vf.formUrl;
 var __daysOfWeek=vf.daysOfWeek;

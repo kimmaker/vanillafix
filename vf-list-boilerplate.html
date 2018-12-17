@@ -1,25 +1,32 @@
-<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 Vanilla Fix for SharePoint: Form Customisation
 http://vanillafix.com
 
 Form Customisation Release: YYMMDD
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::; -->
 
+
+
+<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
 <!-- Load required libraries and styles. ENSURE CORRECT PATHS. -->
 <script src="../../SiteAssets/jquery-3.3.1.min.js"></script>
 <script src="../../SiteAssets/vf-sp.js"></script>
 <link rel="stylesheet" href="../../SiteAssets/vf-sp-styles.css" />
 
+
+
+<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
 <!-- Execute list-specific routines. -->
 <script>
 
-  // Configure the VanillaFix object.
+  // Set object properties to configure Vanilla Fix.
   vf.platformVersion="Online"; // "Online", "2016", "2013", or "2010"
   vf.siteName="My SharePoint Site";
   vf.listName="My SharePoint List";
   vf.locale="en-AU"; // Language and region, for example: "en-AU"
   vf.isCustomLayoutUsed=true; // See https://kimmaker.com/doc/211
   vf.pulseCheck=false; // Switch to false after initial testing.
+  console.log(vf.obtainObjectSignature());
 
   // Set list-specific variables.
   var _itemID=""; // This will be made known on DispForm and EditForm.
@@ -207,8 +214,6 @@ Form Customisation Release: YYMMDD
     return true; // Let SharePoint handle the rest.
   } // end of function PreSaveItem()
 
-
-
   /**
    * Notes
    * 1. Each value must match the display name of the corresponding list column.
@@ -233,7 +238,7 @@ Form Customisation Release: YYMMDD
 
 
 <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
-<!-- CUSTOM FORM LAYOUT (visible if vf.isCustomLayoutUsed is set to true) -->
+<!-- CUSTOM FORM LAYOUT (visible if vf.isCustomLayoutUsed is true) -->
 <div id="formWithCustomLayout" class="formWrapper">
   <div class="formDivRow">
     <div id="formSection1Row1Col1" class="formDiv1Col">
