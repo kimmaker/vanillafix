@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Base Release: 181217
+ * Base Release: 181218
  */
 
 // Check for required libraries.
@@ -128,18 +128,25 @@ class VanillaFix {
   }
 
   // [VF Method] Sanitise text input.
-  getText(v) { return jQuery.trim(v).replace(/(\r\n|\n|\r|\t)/gm,""); }
+  getText(theInput) {
+    if (theInput===undefined) return "";
+    else return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
+  } // end of getText(1)
 
   // [VF Method] Build a jQuery selector for the specified field.
   getField(theFieldLabel) {
+    if (theFieldLabel===undefined) {
+      return this.field+"('Error: Field label not specified')";
+    }
     switch(this.platformVersion) {
       default: return this.field+"('"+theFieldLabel+"')";
     }
   } // end of getField(1)
 
-  // [VF Method] Extract a locale code (language and region) out of a string.
+  // [VF Method] Extract a locale code (language and region) from a string.
   getLocaleCode(theLanguageAndRegion) {
     var defaultCode="en-AU";
+    if (theLanguageAndRegion===undefined) return defaultCode;
     theLanguageAndRegion=this.getText(theLanguageAndRegion);
     if (theLanguageAndRegion.length!=5) return defaultCode;
     theLanguageAndRegion=theLanguageAndRegion.replace("_","-");
@@ -154,6 +161,7 @@ class VanillaFix {
   // [VF Method] Get the specified parameter from the query string. This
   // method is based on ideas from: https://kimmaker.com/ref/505
   getUrlParameter(theName) {
+    if (theName===undefined) return "";
     theName=theName.replace(/[\[]/,'\\[').replace(/[\]]/,'\\]');
     var expression=new RegExp('[\\?&]'+theName+'=([^&#]*)');
     var results=expression.exec(this.queryString);
@@ -377,6 +385,7 @@ class VanillaFix {
   // is in 12-hour format, also indicate AM or PM.
   assembleTimeOfDayString(theFieldLabel,theSeparator) {
     if (theSeparator===undefined) theSeparator=":";
+    if (theFieldLabel===undefined) return "";
     var assembledString="";
     var indicatorAmPm="";
     var hPortion=jQuery(this.f+"('"+theFieldLabel+"')").closest("tr").find(
