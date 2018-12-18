@@ -24,12 +24,12 @@ Form Customisation Release: YYMMDD
   vf.siteName="My SharePoint Site";
   vf.listName="My SharePoint List";
   vf.locale="en-AU"; // language-REGION, for example: "en-GB"
-  vf.isCustomLayoutUsed=true; // See https://kimmaker.com/doc/211
+  vf.isCustomLayoutUsed=false; // See https://kimmaker.com/doc/211
   vf.pulseCheck=true; // Switch to false after initial testing.
   console.log(vf.produceSignature());
 
   // Set list-specific variables.
-  var _itemID=""; // This will be made known on DispForm and EditForm.
+  var _itemID=""; // This applies to DispForm and EditForm.
   var _lableTitle="Title"; // See Note 1.
   var _labelListField2="Second Field in List"; // See Note 1.
   var _labelListField3="Third Field in List"; // See Note 1.
@@ -52,7 +52,7 @@ Form Customisation Release: YYMMDD
 
   //-----------------------------------------------------------------------
   // [Function] Prepare form elements for view mode. This function is designed
-  // to run once per page load.
+  // to run only during form initialisation.
   function definePresentationLogicForViewMode() {
 
     // Example:
@@ -63,7 +63,7 @@ Form Customisation Release: YYMMDD
 
   //-----------------------------------------------------------------------
   // [Function] Prepare form elements for edit mode. This function is designed
-  // to run once per page load.
+  // to run only during form initialisation.
   function definePresentationLogicForEditMode() {
 
     // Define actions that take place only during form intialisation.
@@ -84,8 +84,8 @@ Form Customisation Release: YYMMDD
   } // end of function definePresentationLogicForEditMode()
 
   //-----------------------------------------------------------------------
-  // [Function] Initialise form elements. This function is triggered once per
-  // page load.
+  // [Function] Initialise form elements. This function is triggered only
+  // during form initialisation.
   function initialiseForm() {
 
     // Apply a custom form layout if instructed to do so.
@@ -150,7 +150,7 @@ Form Customisation Release: YYMMDD
 
   //-----------------------------------------------------------------------
   // [Function] Register form events. Events in this function are registered
-  // once per page load.
+  // during form initialisation.
   function registerFormEvents() {
 
     // Define events for view mode.
@@ -181,7 +181,7 @@ Form Customisation Release: YYMMDD
   } // end of function registerFormEvents()
 
   //-----------------------------------------------------------------------
-  // [Function] Render the form. This function is triggered once per page load.
+  // [Function] Execute routines to render the form.
   function renderForm() {
     console.log(vf.renderingStarted);
     initialiseForm();
