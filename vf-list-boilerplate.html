@@ -20,12 +20,12 @@ Form Customisation Release: YYMMDD
 <script>
 
   // Set object properties to configure Vanilla Fix.
-  vf.platformVersion="Online"; // "Online", "2016", "2013", or "2010"
+  vf.platform="Online"; // "Online", "2016", "2013", or "2010"
   vf.siteName="My SharePoint Site";
   vf.listName="My SharePoint List";
-  vf.locale="en-AU"; // Language and region, for example: "en-AU"
+  vf.locale="en-AU"; // language-REGION, for example: "en-GB"
   vf.isCustomLayoutUsed=true; // See https://kimmaker.com/doc/211
-  vf.pulseCheck=false; // Switch to false after initial testing.
+  vf.pulseCheck=true; // Switch to false after initial testing.
   console.log(vf.produceSignature());
 
   // Set list-specific variables.

@@ -2,7 +2,7 @@
  * Vanilla Fix for SharePoint: Class Definition
  * http://vanillafix.com
  *
- * Class Release: 181222
+ * Class Release: 181223
  */
 
 
@@ -21,7 +21,7 @@ if (typeof jQuery==='undefined') {
 // Define the VanillaFix class.
 class VanillaFix {
   constructor(
-    objectPlatformVersion, // "Online", "2016", "2013", or "2010"
+    objectPlatform, // "Online", "2016", "2013", or "2010"
     objectSiteName,
     objectListName,
     objectLocale, // for example: "en-AU"
@@ -33,27 +33,27 @@ class VanillaFix {
     else this._pulseCheck=Boolean(objectPulseCheck);
     if (objectIsCustomLayoutUsed===undefined) this._isCustomLayoutUsed=false;
     else this._isCustomLayoutUsed=Boolean(objectIsCustomLayoutUsed);
-    if (objectLocale===undefined) this._locale="en-AU";
-    else this._locale=this.getLocaleCode(objectLocale);
-    if (objectListName===undefined) this._listName="SharePoint List";
-    else this._listName=this.getText(objectListName);
-    if (objectSiteName===undefined) this._siteName="SharePoint Site";
-    else this._siteName=this.getText(objectSiteName);
-    if (objectPlatformVersion===undefined) this._platformVersion="Online";
-    else this._platformVersion=this.getPlatformVersion(objectPlatformVersion);
+    if (objectLocale===undefined) this._locale=this.determineLocale();
+    else this._locale=this.determineLocale(objectLocale);
+    if (objectListName===undefined) this._listName=this.determineListName();
+    else this._listName=this.determineListName(objectListName);
+    if (objectSiteName===undefined) this._siteName=this.determineSiteName();
+    else this._siteName=this.determineSiteName(objectSiteName);
+    if (objectPlatform===undefined) this._platform=this.determinePlatform();
+    else this._platform=this.determinePlatform(objectPlatform);
   } // end of constructor
 
   //=======================================================================
   // [BASIC PROPERTIES]
   get objectDate() { return this._objectDate; }
-  get platformVersion() { return this._platformVersion; }
-  set platformVersion(v) { this._platformVersion=this.getPlatformVersion(v) }
+  get platform() { return this._platform; }
+  set platform(v) { this._platform=this.determinePlatform(v) }
   get siteName() { return this._siteName; }
-  set siteName(v) { this._siteName=this.getText(v); }
+  set siteName(v) { this._siteName=this.determineSiteName(v); }
   get listName() { return this._listName; }
-  set listName(v) { this._listName=this.getText(v); }
+  set listName(v) { this._listName=this.determineListName(v); }
   get locale() { return this._locale; }
-  set locale(v) { this._locale=this.getLocaleCode(v); }
+  set locale(v) { this._locale=this.determineLocale(v); }
   get isCustomLayoutUsed() { return this._isCustomLayoutUsed; }
   set isCustomLayoutUsed(v) { this._isCustomLayoutUsed=Boolean(v); }
   get pulseCheck() { return this._pulseCheck; }
@@ -91,13 +91,13 @@ class VanillaFix {
     }
   }
   get field() {
-    switch(this.platformVersion) {
+    switch(this.platform) {
       default: return ".ms-standardheader:contains";
     }
   }
   get fieldValue() {
-    switch(this.platformVersion) {
-      default: return "td.ms-formbody";
+    switch(this.platform) {
+      default: return ".ms-formbody";
     }
   }
   get gotPulse() {
@@ -108,12 +108,12 @@ class VanillaFix {
     }
   }
   get listForm() {
-    switch(this.platformVersion) {
+    switch(this.platform) {
       default: return "#onetIDListForm";
     }
   }
   get popUpIndicator() {
-    switch(this.platformVersion) {
+    switch(this.platform) {
       default: return "IsDlg=1";
     }
   }
@@ -133,10 +133,12 @@ class VanillaFix {
     }
   }
   get reqSpan() {
-    switch(this.platformVersion) {
-      default: return "<span class='editMode ms-accentText'>"
-      +this.reqIndicator+"</span>";
-    }
+    var spanClass="editMode";
+    switch(this.platform) {
+      case "2010": spanClass+=" red"; break;
+      default: spanClass+=" ms-accentText";
+    } // Ensure that .editMode and .red are defined in the stylesheet.
+    return "<span class='"+spanClass+"'>"+this.reqIndicator+"</span>";
   }
 
   //=======================================================================
@@ -145,38 +147,32 @@ class VanillaFix {
   produceSignature() {
     return ":::::::::::\nVanilla Fix Object"
     +"\n+ Instantiated on: "+this.objectDate.toString()
-    +"\n+ Target platform: "+this.platformVersion
+    +"\n+ Target platform: "+this.platform
     +"\n+ Locale applied: "+this.locale
     +"\n+ Site described as: "+this.siteName
     +"\n+ List described as: "+this.listName
     +"\n+ Custom form layout: "+this.isCustomLayoutUsed
     +"\n+ Form mode: "+this.formMode+" ("+this.formModeLiteral+")"
-    +"\n+ VF URL: "+this.formUrl.replace(this.queryString,"")
+    +"\n+ Form URL: "+this.formUrl.replace(this.queryString,"")
     +"\n+ "+unescape(
       this.queryString.replace("?","").replace(/&/g,"\n+ ").replace(/=/g,": ")
     );
   } // end of produceSignature()
 
   //=======================================================================
-  // [CLASS METHOD] Sanitise text input.
-  getText(theInput) {
-    if (theInput===undefined) return "";
-    return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
-  } // end of getText(1)
+  // [CLASS METHOD] Decide what to call the current SharePoint list.
+  determineListName(theInput) {
+    var defaultName="[List not specified]";
+    if (theInput===undefined) return defaultName;
+    var name=this.getText(theInput);
+    if (name.length<2) return defaultName;
+    return name;
+  } // end of determineListName(1)
 
   //=======================================================================
-  // [CLASS METHOD] Build a jQuery selector for the specified field.
-  getField(theLabel) {
-    if (theLabel===undefined) return this.field+"('undefined')";
-    switch(this.platformVersion) {
-      default: return this.field+"('"+this.getText(theLabel)+"')";
-    }
-  } // end of getField(1)
-
-  //=======================================================================
-  // [CLASS METHOD] Extract a locale code (language and region) from a string.
-  getLocaleCode(theLanguageAndRegion) {
-    var defaultCode="en-AU";
+  // [CLASS METHOD] Extract a locale code (language and region) from input.
+  determineLocale(theLanguageAndRegion) {
+    var defaultCode="en-GB";
     if (theLanguageAndRegion===undefined) return defaultCode;
     theLanguageAndRegion=this.getText(theLanguageAndRegion);
     if (theLanguageAndRegion.length!=5) return defaultCode;
@@ -187,29 +183,59 @@ class VanillaFix {
     var pattern=/^[a-z]{2}-[A-Z]{2}$/g;
     if (pattern.test(code)==false) return defaultCode;
     else return code;
-  } // end of getLocaleCode(1)
+  } // end of determineLocale(1)
 
   //=======================================================================
-  // [CLASS METHOD] Validate the specified platform version.
-  getPlatformVersion(theInput) {
+  // [CLASS METHOD] Decide what to call the current SharePoint site.
+  determineSiteName(theInput) {
+    var defaultName="[Site not specified]";
+    if (theInput===undefined) return defaultName;
+    var name=this.getText(theInput);
+    if (name.length<2) return defaultName;
+    return name;
+  } // end of determineSiteName(1)
+
+  //=======================================================================
+  // [CLASS METHOD] Identify the current SharePoint platform.
+  determinePlatform(theInput) {
     var defaultPlatform="Online";
     if (theInput===undefined) return defaultPlatform;
-    var platform=this.getText(theInput);
-    if ((platform=="2016")||(platform=="2013")||(platform=="2010")) {
-      return platform;
+    var specifiedPlatform=this.getText(theInput);
+    if (specifiedPlatform.length<2) return defaultPlatform;
+    switch(specifiedPlatform) {
+      case "2016": return specifiedPlatform;
+      case "2013": return specifiedPlatform;
+      case "2010": return specifiedPlatform;
+      default: return defaultPlatform;
     }
-    return defaultPlatform;
-  } // end of getPlatformVersion(1)
+  } // end of determinePlatform(1)
+
+  //=======================================================================
+  // [CLASS METHOD] Sanitise text input.
+  getText(theInput) {
+    if (theInput===undefined) return "";
+    return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
+  } // end of getText(1)
+
+  //=======================================================================
+  // [CLASS METHOD] Build a jQuery selector for the label (display name) of
+  // the specified field.
+  getField(theLabel) {
+    if (theLabel===undefined) return this.field+"('undefined')";
+    switch(this.platform) {
+      default: return this.field+"('"+this.getText(theLabel)+"')";
+    }
+  } // end of getField(1)
 
   //=======================================================================
   // [CLASS METHOD] Get the specified parameter from the query string. This
   // method is based on ideas from: https://kimmaker.com/ref/505
   getUrlParameter(theName) {
     if (theName===undefined) return "";
-    theName=theName.replace(/[\[]/,'\\[').replace(/[\]]/,'\\]');
-    var expression=new RegExp('[\\?&]'+theName+'=([^&#]*)');
+    theName=theName.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");
+    var expression=new RegExp("[\\?&]"+theName+"=([^&#]*)");
     var results=expression.exec(this.queryString);
-    return results===null?'':decodeURIComponent(results[1].replace(/\+/g,' '));
+    return results===null?"":decodeURIComponent(results[1].replace(/\+/g," "));
   } // end of getUrlParameter(1)
 
   //=======================================================================
@@ -332,23 +358,26 @@ class VanillaFix {
   } // end of convertToSortableTime(3)
 
   //=======================================================================
-  // [CLASS METHOD] Convert a conventional date string to YYYY-MM-DD;
-  // for example, "13/07/2019" returns "2019-07-13". An optional second
-  // argument can specify what the day-month-year separator in the input
-  // string is. If the second argument is not given, the method uses "/".
-  // An optional third argument may be set to "US" in which case the input
-  // string is recognised as month-day-year instead of day-month-year. All
-  // invalid inputs return "YYYY-01-01" where YYYY is the current year.
+  // [CLASS METHOD] Convert a conventional date string to YYYY-MM-DD; for
+  // example, "13/07/2019" returns "2019-07-13". An optional second argument
+  // can specify what the day-month-year separator in the input string is. If
+  // the second argument is not given, the method uses "/". An optional third
+  // argument may be set to "en-US" to indicate U.S. date format in the input,
+  // in which case the given date is treated as month-day-year instead of day-
+  // month-year. When this third argument is not given, the locale applied to
+  // the instantiated Vanilla Fix object is used.
   //
-  // Further examples:
+  // All invalid inputs return "YYYY-01-01" where YYYY is the current year.
+  // Below examples assume that the locale applied to the Vanilla Fix object
+  // is not "en-US":
   // ("29/2/2020") returns "2020-02-29"
-  // ("29/2/2021") returns "2018-01-01" (invalid input)
+  // ("29/2/2021") returns "2019-01-01" (invalid input)
   // ("11/12/2020","/") returns "2020-12-11"
-  // ("11.12.2020") returns "2018-01-01" (invalid input)
+  // ("11.12.2020") returns "2019-01-01" (invalid input)
   // ("11.12.2020",".") returns "2020-12-11"
   // ("11-12-2020","-") returns "2020-12-11"
-  // ("11.12.2020",".","US") returns "2020-11-12"
-  // ("11-12-2020","-","US") returns "2020-11-12"
+  // ("11.12.2020",".","en-US") returns "2020-11-12"
+  // ("11-12-2020","-","en-US") returns "2020-11-12"
   // ("11/12/2020","/","en-US") returns "2020-11-12"
   convertToSortableDate(theDate,theSeparator,theLocale) {
     var currentYYYY=this.objectDate.getFullYear();
@@ -372,7 +401,7 @@ class VanillaFix {
 
   //=======================================================================
   // [CLASS METHOD] Extract HH:mm from a SharePoint time field. If the input
-  // time is in 12-hour format, also indicate AM or PM.
+  // time is in 12-hour format, also add an AM-or-PM indicator.
   assembleTimeOfDayString(theFieldLabel,theSeparator) {
     if (theSeparator===undefined) theSeparator=":";
     if (theFieldLabel===undefined) return "";
@@ -403,7 +432,7 @@ var vf=new VanillaFix();
 
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// [VARIABLES AND FUNCTIONS FOR BACKWARD COMPATIBILITY]
+// [VARIABLES AND FUNCTIONS PROVIDED FOR BACKWARD COMPATIBILITY]
 // Note. Below is necessary only if your vf-list-{name}.html initially
 // targeted vf-sp.js Release 181210 or older. If you are currently
 // transitioning from legacy Vanilla Fix to object-oriented Vanilla Fix, be
