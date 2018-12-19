@@ -1,8 +1,8 @@
 /**
- * Vanilla Fix for SharePoint: Class Definition
- * http://vanillafix.com
- *
- * Class Release: 181223
+ * Vanilla Fix for SharePoint
+ * Class Definition Release 181224
+ * Documentation: http://vanillafix.com
+ * Repository: https://github.com/kimmaker/vanillafix
  */
 
 
@@ -24,7 +24,8 @@ class VanillaFix {
     objectPlatform, // "Online", "2016", "2013", or "2010"
     objectSiteName,
     objectListName,
-    objectLocale, // for example: "en-AU"
+    objectLocale, // for example: "en-GB"
+    objectRevision,
     objectIsCustomLayoutUsed, // true or false
     objectPulseCheck // true or false
   ) {
@@ -33,6 +34,8 @@ class VanillaFix {
     else this._pulseCheck=Boolean(objectPulseCheck);
     if (objectIsCustomLayoutUsed===undefined) this._isCustomLayoutUsed=false;
     else this._isCustomLayoutUsed=Boolean(objectIsCustomLayoutUsed);
+    if (objectRevision===undefined) this._revision="1";
+    else this._revision=this.getText(objectRevision);
     if (objectLocale===undefined) this._locale=this.determineLocale();
     else this._locale=this.determineLocale(objectLocale);
     if (objectListName===undefined) this._listName=this.determineListName();
@@ -54,6 +57,8 @@ class VanillaFix {
   set listName(v) { this._listName=this.determineListName(v); }
   get locale() { return this._locale; }
   set locale(v) { this._locale=this.determineLocale(v); }
+  get revision() { return this._revision }
+  set revision(v) { this._revision=this.getText(v); }
   get isCustomLayoutUsed() { return this._isCustomLayoutUsed; }
   set isCustomLayoutUsed(v) { this._isCustomLayoutUsed=Boolean(v); }
   get pulseCheck() { return this._pulseCheck; }
@@ -145,17 +150,18 @@ class VanillaFix {
   // [CLASS METHOD] Print the key properties of the instantiated VanillaFix
   // object for logging.
   produceSignature() {
-    return ":::::::::::\nVanilla Fix Object"
+    return "---\n# Vanilla Fix Object"
     +"\n+ Instantiated on: "+this.objectDate.toString()
     +"\n+ Target platform: "+this.platform
-    +"\n+ Locale applied: "+this.locale
     +"\n+ Site described as: "+this.siteName
     +"\n+ List described as: "+this.listName
+    +"\n+ Locale applied: "+this.locale
+    +"\n+ Customisation revision: "+this.revision
     +"\n+ Custom form layout: "+this.isCustomLayoutUsed
     +"\n+ Form mode: "+this.formMode+" ("+this.formModeLiteral+")"
     +"\n+ Form URL: "+this.formUrl.replace(this.queryString,"")
-    +"\n+ "+unescape(
-      this.queryString.replace("?","").replace(/&/g,"\n+ ").replace(/=/g,": ")
+    +"\n  + "+unescape(
+      this.queryString.replace("?","").replace(/&/g,"\n  + ").replace(/=/g,": ")
     );
   } // end of produceSignature()
 
@@ -196,7 +202,7 @@ class VanillaFix {
   } // end of determineSiteName(1)
 
   //=======================================================================
-  // [CLASS METHOD] Identify the current SharePoint platform.
+  // [CLASS METHOD] Decide which SharePoint platform to target.
   determinePlatform(theInput) {
     var defaultPlatform="Online";
     if (theInput===undefined) return defaultPlatform;
@@ -433,10 +439,12 @@ var vf=new VanillaFix();
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // [VARIABLES AND FUNCTIONS PROVIDED FOR BACKWARD COMPATIBILITY]
-// Note. Below is necessary only if your vf-list-{name}.html initially
-// targeted vf-sp.js Release 181210 or older. If you are currently
-// transitioning from legacy Vanilla Fix to object-oriented Vanilla Fix, be
-// sure to remove dependencies on these variables and functions.
+// Please note: Below is necessary only if your vf-list-{name}.html was
+// initially written for legacy Vanilla Fix, that is, vf-sp.js Release 181210
+// or earlier. If you are currently transitioning from legacy Vanilla Fix to
+// object-oriented Vanilla Fix, be sure to remove dependencies on these
+// variables and functions by referencing the respective object properties
+// and methods directly.
 var __currentDate=vf.objectDate;
 var __currentTimeZone=vf.currentTimeZone;
 var __currentURL=vf.formUrl;
@@ -452,7 +460,7 @@ var __regExEmail=vf.regExEmail;
 var __respondToPulseCheck=vf.gotPulse;
 var __spanAsterisk=vf.reqSpan;
 function vfS(theText) { return vf.getText(theText); }
-function vfSanitiseText(theText) { return vfS(theText); }
+function vfSanitiseText(theText) { return vf.getText(theText); }
 function vfGetUrlParameter(theName) { return vf.getUrlParameter(theName); }
 function vfApplyCustomLayout() { vf.applyCustomLayout(); }
 function vfAppendCharacters(theString,theChars) {

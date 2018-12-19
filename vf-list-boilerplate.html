@@ -1,9 +1,11 @@
-<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-Vanilla Fix for SharePoint: Form Customisation
-http://vanillafix.com
-
-Form Customisation Release: YYMMDD
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::; -->
+<script>
+  /**
+   * Vanilla Fix for SharePoint
+   * List Form Customisation
+   * Documentation: http://vanillafix.com
+   * Repository: https://github.com/kimmaker/vanillafix
+   */
+</script>
 
 
 
@@ -16,14 +18,15 @@ Form Customisation Release: YYMMDD
 
 
 <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
-<!-- Execute list-specific routines. -->
+<!-- Customise the SharePoint list form. -->
 <script>
 
-  // Set object properties to configure Vanilla Fix.
+  // First, set object properties to configure Vanilla Fix.
   vf.platform="Online"; // "Online", "2016", "2013", or "2010"
-  vf.siteName="My SharePoint Site";
-  vf.listName="My SharePoint List";
+  vf.siteName="Our SharePoint Site";
+  vf.listName="Our SharePoint List";
   vf.locale="en-AU"; // language-REGION, for example: "en-GB"
+  vf.revision="1";
   vf.isCustomLayoutUsed=false; // See https://kimmaker.com/doc/211
   vf.pulseCheck=true; // Switch to false after initial testing.
   console.log(vf.produceSignature());
@@ -38,7 +41,7 @@ Form Customisation Release: YYMMDD
   var _userSetTitle=""; // See Note 3.
 
   //-----------------------------------------------------------------------
-  // [Function] Conditionally customise fields. This function applies to edit
+  // [FUNCTION] Conditionally customise fields. This function applies to edit
   // mode only, and may be triggered multiple times as user input changes.
   function conditionallyCustomiseFields() {
 
@@ -51,7 +54,7 @@ Form Customisation Release: YYMMDD
   } // end of function conditionallyCustomiseFields()
 
   //-----------------------------------------------------------------------
-  // [Function] Prepare form elements for view mode. This function is designed
+  // [FUNCTION] Prepare form elements for view mode. This function is designed
   // to run only during form initialisation.
   function definePresentationLogicForViewMode() {
 
@@ -62,7 +65,7 @@ Form Customisation Release: YYMMDD
   } // end of function definePresentationLogicForViewMode()
 
   //-----------------------------------------------------------------------
-  // [Function] Prepare form elements for edit mode. This function is designed
+  // [FUNCTION] Prepare form elements for edit mode. This function is designed
   // to run only during form initialisation.
   function definePresentationLogicForEditMode() {
 
@@ -71,7 +74,8 @@ Form Customisation Release: YYMMDD
     //
     //jQuery(vf.getField(_labelListField2)).closest("tr").hide();
 
-    // NewForm.aspx only: if a custom layout is used, hide Item ID.
+    // NewForm.aspx only: if a custom layout is used, hide the placeholder
+    // for Item ID, because ID does not exist yet.
     if (vf.formMode==1) {
       if (vf.isCustomLayoutUsed) {
         jQuery("span[id^='formItemID']").hide("");
@@ -84,7 +88,7 @@ Form Customisation Release: YYMMDD
   } // end of function definePresentationLogicForEditMode()
 
   //-----------------------------------------------------------------------
-  // [Function] Initialise form elements. This function is triggered only
+  // [FUNCTION] Initialise form elements. This function is triggered only
   // during form initialisation.
   function initialiseForm() {
 
@@ -149,7 +153,7 @@ Form Customisation Release: YYMMDD
   } // end of function initialiseForm()
 
   //-----------------------------------------------------------------------
-  // [Function] Register form events. Events in this function are registered
+  // [FUNCTION] Register form events. Events in this function are registered
   // during form initialisation.
   function registerFormEvents() {
 
@@ -181,7 +185,7 @@ Form Customisation Release: YYMMDD
   } // end of function registerFormEvents()
 
   //-----------------------------------------------------------------------
-  // [Function] Execute routines to render the form.
+  // [FUNCTION] Execute routines to render the form.
   function renderForm() {
     console.log(vf.renderingStarted);
     initialiseForm();
@@ -192,11 +196,11 @@ Form Customisation Release: YYMMDD
   } // end of function renderForm()
 
   //-----------------------------------------------------------------------
-  // [SharePoint] Execute on page load.
+  // [SHAREPOINT] Execute on page load.
   _spBodyOnLoadFunctionNames.push("renderForm");
 
   //-----------------------------------------------------------------------
-  // [SharePoint] Perform validation upon save. This function kicks in only in
+  // [SHAREPOINT] Perform validation upon save. This function kicks in only in
   // edit mode, that is, vf.formMode>=1.
   function PreSaveItem() {
 
@@ -214,31 +218,36 @@ Form Customisation Release: YYMMDD
     return true; // Let SharePoint handle the rest.
   } // end of function PreSaveItem()
 
-  /**
-   * Notes
-   * 1. Each value must match the display name of the corresponding list column.
-   * 2. "_item"-prefixed variables are intended to either capture item metadata
-   *    in view mode, or remember "original" item metadta in edit mode before
-   *    allowing a user to make changes. These variables are considered static,
-   *    that is, they stay persistent throughout page load. While the use of
-   *    _item-prefixed variables is optional, it may be more flexible and
-   *    readable than a repeated use of identical jQuery selectors.
-   * 3. "_userSet"-prefixed variables are designed for edit mode only. They act
-   *    as intermediary storage for "live" item metadata, which may or may not
-   *    have been changed by the user. These variables may be updated as many
-   *    times as necessary until Save. The use of _userSet-prefixed variables
-   *    is strictly optional, but may come in handy depending on the complexity
-   *    of data validation required. Functions such as PreSaveItem() may
-   *    compare the _item- and _userSet- values of a particular field for
-   *    validation purposes.
-   */
+  /*.......................................................................
+  Notes
+  1. Each value must match the display name of the corresponding list column.
+  2. "_item"-prefixed variables are intended to either capture item metadata
+     in view mode, or remember "original" item metadta in edit mode before
+     allowing a user to make changes. These variables are considered static,
+     that is, they stay persistent throughout page load. While the use of
+     _item-prefixed variables is optional, it may be more flexible and
+     readable than a repeated use of identical jQuery selectors.
+  3. "_userSet"-prefixed variables are designed for edit mode only. They act
+     as intermediary storage for "live" item metadata, which may or may not
+     have been changed by the user. These variables may be updated as many
+     times as necessary until Save. The use of _userSet-prefixed variables
+     is strictly optional, but may come in handy depending on the complexity
+     of data validation required. Functions such as PreSaveItem() may
+     compare the _item- and _userSet- values of a particular field for
+     validation purposes.
+  .......................................................................*/
 
 </script>
 
 
 
 <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
-<!-- CUSTOM FORM LAYOUT (visible if vf.isCustomLayoutUsed is true) -->
+<!-- [CUSTOM FORM LAYOUT] (activated if vf.isCustomLayoutUsed is true)
+     Develop the below HTML structure to create placeholders for the fields
+     in this SharePoint list. If the list does not require a custom layout,
+     then simply delete the entire div#formWithCustomLayout block.
+     Documentation: https://kimmaker.com/doc/211
+-->
 <div id="formWithCustomLayout" class="formWrapper">
   <div class="formDivRow">
     <div id="formSection1Row1Col1" class="formDiv1Col">

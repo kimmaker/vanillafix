@@ -1,46 +1,28 @@
 /**
- * Vanilla Fix for SharePoint: Stylesheet
- * http://vanillafix.com
- *
- * Stylesheet Release: 181216
+ * Vanilla Fix for SharePoint
+ * Stylesheet Release 181224
+ * Documentation: http://vanillafix.com
+ * Repository: https://github.com/kimmaker/vanillafix
  */
 
 
 
-/* [SharePoint styles, overridden as needed] */
-#onetIDListForm {
-  /* List form starts hidden */
-  display: none;
-}
+/* --------------------------------------------------------------------- */
+/* [SHAREPOINT STYLES, OVERRIDDEN AS REQUIRED] */
+#onetIDListForm { display: none; }
 hr {
   color: #EEEEEE;
   background-color: #EEEEEE;
   border-color: #EEEEEE;
 }
-.ms-core-pageTitle {
-  /* Page title */
-  font-weight: inherit;
-}
-.ms-textXLarge {
-  /* Large text */
-  font-weight: inherit;
-}
+.ms-core-pageTitle { font-weight: inherit; }
+.ms-textXLarge { font-weight: inherit; }
 .ms-usereditor,
-.ms-long {
-  /* Multi-line textbox */
-  width: 92%; /* SharePoint default is 386px. */
-}
+.ms-long { width: 92%; }
 .sp-peoplepicker-topLevel,
-.sp-peoplepicker-topLevelDisabled {
-  /* People-picker */
-  font-weight: inherit;
-}
-.ms-ButtonHeightWidth {
-  /* Button on form */
-  font-weight: inherit;
-}
-.ms-propertysheet a {
-  /* "Delete" links in item attachment list */
+.sp-peoplepicker-topLevelDisabled { font-weight: inherit; }
+.ms-ButtonHeightWidth { font-weight: inherit; }
+.ms-propertysheet a { /* "Delete" links in item attachment list */
   font-weight: normal;
   padding: 1px 6px 1px 1px;
   background-color: #DDDDDD;
@@ -48,62 +30,56 @@ hr {
 
 
 
-/* [Custom re-usable styles] */
-.editMode {
-  /* This is a class used for conditional visibility. */
-  display: none;
-  font-weight: inherit;
-}
+/* --------------------------------------------------------------------- */
+/* [RE-USABLE STYLES] */
+.editMode { display: none; }
 .bold { font-weight: bold; }
 .red { color: #FF0000; }
 .black { color: #000000; }
 
 
 
-/* [Styles for forms using a custom layout] */
+/* --------------------------------------------------------------------- */
+/* [DEFAULT STYLES FOR FORMS USING A CUSTOM LAYOUT] */
 .formWrapper {
+  display: none;
   clear: both;
   margin: 0px 0px 4px 4px;
-  display: none;
   min-width: 800px;
 }
 .formDivRow {
   clear: both;
   margin: 32px 16px 0px 0px;
 }
-.formDiv1Col {
-  margin: 0px 32px 32px 0px;
-}
+.formDiv1Col { margin: 0px 32px 32px 0px; }
 .formDiv2Col {
   float: left;
-  width: 44%;
   margin: 0px 16px 32px 0px;
   padding-right: 16px;
+  width: 44%;
 }
 .formDiv3Col {
   float: left;
-  width: 29%;
   margin: 0px 16px 32px 0px;
   padding-right: 16px;
+  width: 29%;
 }
 .borderTop {
   border-top: 1px solid #CCCCCC;
   padding-top: 32px;
 }
-.borderRight {
-  border-right: 1px solid #CCCCCC;
-}
+.borderRight { border-right: 1px solid #CCCCCC; }
 .customLayoutSectionTitle {
-  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 18px;
   text-transform: uppercase;
   font-weight: normal;
 }
 .customLayoutSectionSubTitle {
-  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   text-transform: none;
+  font-weight: normal;
 }
-
 
 
