@@ -15,10 +15,14 @@ hr {
   background-color: #EEEEEE;
   border-color: #EEEEEE;
 }
+.ms-formtable input,
+.ms-formtable select {
+  font-weight: normal;
+}
 .ms-core-pageTitle { font-weight: inherit; }
 .ms-textXLarge { font-weight: inherit; }
-.ms-usereditor,
-.ms-long { width: 92%; }
+/* .ms-usereditor,
+.ms-long { width: 92%; } */
 .sp-peoplepicker-topLevel,
 .sp-peoplepicker-topLevelDisabled { font-weight: inherit; }
 .ms-ButtonHeightWidth { font-weight: inherit; }
@@ -26,6 +30,9 @@ hr {
   font-weight: normal;
   padding: 1px 6px 1px 1px;
   background-color: #DDDDDD;
+}
+table .ms-formtoolbar {
+  min-width: 516px;
 }
 
 
@@ -45,13 +52,14 @@ hr {
   display: none;
   clear: both;
   margin: 0px 0px 4px 4px;
-  min-width: 800px;
 }
 .formDivRow {
   clear: both;
   margin: 32px 16px 0px 0px;
 }
-.formDiv1Col { margin: 0px 32px 32px 0px; }
+.formDiv1Col {
+  margin: 0px 32px 32px 0px;
+}
 .formDiv2Col {
   float: left;
   margin: 0px 16px 32px 0px;
@@ -68,7 +76,27 @@ hr {
   border-top: 1px solid #CCCCCC;
   padding-top: 32px;
 }
-.borderRight { border-right: 1px solid #CCCCCC; }
+.borderRight {
+  border-right: 1px solid #CCCCCC;
+}
+.customFormLabel {
+  width: 113px;
+  vertical-align: top;
+}
+.customFormBody {
+  width: 350px;
+  vertical-align: top;
+}
+.customFormBody input,
+.customFormBody textarea {
+  font-weight: inherit;
+}
+.customFormBody select {
+  font-weight: inherit;
+}
+.customFormTable {
+  margin-top: 8px;
+}
 .customLayoutSectionTitle {
   font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 18px;

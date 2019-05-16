@@ -1,6 +1,6 @@
 /**
  * Vanilla Fix for SharePoint
- * Class Definition Release 181224
+ * Class Definition Release 190514
  * Documentation: http://vanillafix.com
  * Repository: https://github.com/kimmaker/vanillafix
  */
@@ -161,7 +161,9 @@ class VanillaFix {
     +"\n+ Form mode: "+this.formMode+" ("+this.formModeLiteral+")"
     +"\n+ Form URL: "+this.formUrl.replace(this.queryString,"")
     +"\n  + "+unescape(
-      this.queryString.replace("?","").replace(/&/g,"\n  + ").replace(/=/g,": ")
+      this.queryString.replace("?",String("")
+      ).replace(/&/g,String("\n  + ")
+      ).replace(/=/g,String(": "))
     );
   } // end of produceSignature()
 
@@ -220,7 +222,7 @@ class VanillaFix {
   // [CLASS METHOD] Sanitise text input.
   getText(theInput) {
     if (theInput===undefined) return "";
-    return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,"");
+    return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,String(""));
   } // end of getText(1)
 
   //=======================================================================
@@ -250,6 +252,7 @@ class VanillaFix {
   // and is further documented at: https://kimmaker.com/doc/211
   applyCustomLayout() {
     jQuery(".ms-formtable").hide();
+    if (this.platform=="Online") jQuery(".ms-WPBody").show();
     jQuery("span.customLayout").each(function() {
       var displayName=jQuery(this).attr("data-displayName");
       var elem=jQuery(this);
@@ -400,7 +403,7 @@ class VanillaFix {
     var strYMD=arrDate[2];
     if ((theLocale.toUpperCase()=="US")||(theLocale.toUpperCase()=="EN-US")) {
       strYMD+=("-"+arrDate[0]+"-"+arrDate[1]);
-    } else strYMD+=("-"+arrDate[1]+"-"+arrDate[0]);
+    } else strYMD+=(String("-"+arrDate[1]+"-"+arrDate[0]));
     if (isNaN(Date.parse(strYMD))) return defaultYMD;
     else return strYMD;
   } // end of convertToSortableDate(3)

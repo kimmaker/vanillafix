@@ -11,7 +11,7 @@
 
 <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
 <!-- Load required libraries and styles. ENSURE CORRECT PATHS. -->
-<script src="../../SiteAssets/jquery-3.3.1.min.js"></script>
+<script src="../../SiteAssets/jquery-3.4.1.min.js"></script>
 <script src="../../SiteAssets/vf-sp.js"></script>
 <link rel="stylesheet" href="../../SiteAssets/vf-sp-styles.css" />
 
@@ -33,7 +33,7 @@
 
   // Set list-specific variables.
   var _itemID=""; // This applies to DispForm and EditForm.
-  var _lableTitle="Title"; // See Note 1.
+  var _labelTitle="Title"; // See Note 1.
   var _labelListField2="Second Field in List"; // See Note 1.
   var _labelListField3="Third Field in List"; // See Note 1.
   var _labelListField4="Fourth Field in List"; // See Note 1.
@@ -60,7 +60,7 @@
 
     // Example:
     //
-    //jQuery(vf.getField(_lableTitle)).closest("tr").hide();
+    //jQuery(vf.getField(_labelTitle)).closest("tr").hide();
 
   } // end of function definePresentationLogicForViewMode()
 
@@ -111,7 +111,7 @@
       // above or below an existing field. In the following example, ID is
       // placed just above Title.
       //
-      //jQuery(vf.getField(_lableTitle)).closest("tr").find(
+      //jQuery(vf.getField(_labelTitle)).closest("tr").find(
       //  vf.fieldValue
       //).prepend("Item ID "+_itemID+"<br /><br />");
       //
@@ -147,7 +147,7 @@
 
       // Further initialise EditForm.aspx if necessary.
       if (vf.formMode==2) {
-        _itemTitle=vf.getText(jQuery("input[title='"+_lableTitle+"']").val());
+        _itemTitle=vf.getText(jQuery("input[title='"+_labelTitle+"']").val());
       } // end of if (vf.formMode==2)
     } // end of if (vf.formMode>=1)
   } // end of function initialiseForm()
@@ -176,8 +176,8 @@
       //...................................................................
       // [Event] Example event
       //
-      //jQuery("input[title='"+_lableTitle+"']").on("change",function() {
-      //  _userSetTitle=jQuery("input[title='"+_lableTitle+"']").val();
+      //jQuery("input[title='"+_labelTitle+"']").on("change",function() {
+      //  _userSetTitle=jQuery("input[title='"+_labelTitle+"']").val();
       //  conditionallyCustomiseFields(); // ...and/or other actions as needed
       //}); // end of Example event
 
@@ -205,13 +205,13 @@
   function PreSaveItem() {
 
     // Read in user input at Save for validation and further processing.
-    _userSetTitle=vf.getText(jQuery("input[title='"+_lableTitle+"']").val());
+    _userSetTitle=vf.getText(jQuery("input[title='"+_labelTitle+"']").val());
 
     // Example validation:
     //
     //if (_userSetTitle=="") {
     //  alert("Title cannot be left blank.");
-    //  jQuery("input[title='"+_lableTitle+"']").focus();
+    //  jQuery("input[title='"+_labelTitle+"']").focus();
     //  return false;
     //}
 
@@ -249,56 +249,21 @@
      Documentation: https://kimmaker.com/doc/211
 -->
 <div id="formWithCustomLayout" class="formWrapper">
-  <div class="formDivRow">
-    <div id="formSection1Row1Col1" class="formDiv1Col">
-      <span id="formHeading1" class="customLayoutSectionTitle">
-        Form Section 1 Heading
-      </span>
-    </div>
-  </div>
-  <div class="formDivRow">
-    <div id="formSection1Row2Col1" class="formDiv2Col">
-      <p><span id="formTitleLabel">
-        <strong>Title</strong>
-        <span class="editMode bold red">*</span>
-      </span></p>
-      <span id="formTitle" class="customLayout"
-        data-displayName="Title"
-      ></span>
-    </div>
-    <div id="formSection1Row2Col2" class="formDiv2Col">
-      <p><span id="formItemIDLabel">
-        <strong>ID</strong>
-      </span></p>
-      <span id="formItemID"></span>
-    </div>
-  </div>
-  <div class="formDivRow borderTop">
-    <div id="formSection1Row3Col1" class="formDiv1Col">
-      <span id="formHeading2" class="customLayoutSectionTitle">
-        Form Section 2 Heading
-      </span>
-    </div>
-  </div>
-  <div class="formDivRow">
-    <div id="formSection1Row4Col1" class="formDiv2Col">
-      <p><span id="formListField2Label">
-        <strong>Mandatory List Field 2</strong>
-        <span class="editMode bold red">*</span>
-      </span></p>
-      <span id="formListField2" class="customLayout"
-        data-displayName="Second Field in List"
-      ></span>
-    </div>
-    <div id="formSection1Row4Col2" class="formDiv2Col">
-      <p><span id="formListField3Label">
-        <strong>Optional List Field 3</strong>
-      </span></p>
-      <span id="formListField3" class="customLayout"
-        data-displayName="Third Field in List"
-      ></span>
-    </div>
-  </div>
+  <table class="customFormTable">
+    <tr>
+      <td class="ms-formlabel customFormLabel">
+        <span id="formLabelTitle">
+          Title *
+        </span>
+      </td>
+      <td class="ms-formbody customFormBody">
+        <span id="formFieldTitle" class="customLayout"
+          data-displayName="Title"
+        ></span>
+        <span id="formContentTitle"></span>
+      </td>
+    </tr>
+  </table>
 </div>
 
 
