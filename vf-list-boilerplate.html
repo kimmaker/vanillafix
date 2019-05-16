@@ -47,7 +47,7 @@
 
     // Example:
     //
-    //if (jQuery("input[title='"+_labelListField2+"']").val()=="") {
+    //if (jQuery("input[title^='"+_labelListField2+"']").val()=="") {
     //  jQuery("span[id^='formListField3']").show();
     //} else jQuery("span[id^='formListField3']").hide();
 
@@ -147,7 +147,7 @@
 
       // Further initialise EditForm.aspx if necessary.
       if (vf.formMode==2) {
-        _itemTitle=vf.getText(jQuery("input[title='"+_labelTitle+"']").val());
+        _itemTitle=vf.getText(jQuery("input[title^='"+_labelTitle+"']").val());
       } // end of if (vf.formMode==2)
     } // end of if (vf.formMode>=1)
   } // end of function initialiseForm()
@@ -176,8 +176,8 @@
       //...................................................................
       // [Event] Example event
       //
-      //jQuery("input[title='"+_labelTitle+"']").on("change",function() {
-      //  _userSetTitle=jQuery("input[title='"+_labelTitle+"']").val();
+      //jQuery("input[title^='"+_labelTitle+"']").on("change",function() {
+      //  _userSetTitle=jQuery("input[title^='"+_labelTitle+"']").val();
       //  conditionallyCustomiseFields(); // ...and/or other actions as needed
       //}); // end of Example event
 
@@ -205,13 +205,13 @@
   function PreSaveItem() {
 
     // Read in user input at Save for validation and further processing.
-    _userSetTitle=vf.getText(jQuery("input[title='"+_labelTitle+"']").val());
+    _userSetTitle=vf.getText(jQuery("input[title^='"+_labelTitle+"']").val());
 
     // Example validation:
     //
     //if (_userSetTitle=="") {
     //  alert("Title cannot be left blank.");
-    //  jQuery("input[title='"+_labelTitle+"']").focus();
+    //  jQuery("input[title^='"+_labelTitle+"']").focus();
     //  return false;
     //}
 
