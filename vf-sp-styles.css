@@ -1,6 +1,6 @@
 /**
  * Vanilla Fix for SharePoint
- * Stylesheet Release 181224
+ * Stylesheet Release 190612
  * Documentation: http://vanillafix.com
  * Repository: https://github.com/kimmaker/vanillafix
  */
@@ -10,29 +10,17 @@
 /* --------------------------------------------------------------------- */
 /* [SHAREPOINT STYLES, OVERRIDDEN AS REQUIRED] */
 #onetIDListForm { display: none; }
+#ribbonBox { display: none; }
 hr {
   color: #EEEEEE;
   background-color: #EEEEEE;
   border-color: #EEEEEE;
 }
-.ms-formtable input,
-.ms-formtable select {
-  font-weight: normal;
-}
-.ms-core-pageTitle { font-weight: inherit; }
-.ms-textXLarge { font-weight: inherit; }
-/* .ms-usereditor,
-.ms-long { width: 92%; } */
-.sp-peoplepicker-topLevel,
-.sp-peoplepicker-topLevelDisabled { font-weight: inherit; }
-.ms-ButtonHeightWidth { font-weight: inherit; }
-.ms-propertysheet a { /* "Delete" links in item attachment list */
-  font-weight: normal;
-  padding: 1px 6px 1px 1px;
-  background-color: #DDDDDD;
-}
 table .ms-formtoolbar {
   min-width: 516px;
+}
+.ms-imnSpan .ms-spimn-presenceLink {
+  display: none; /* Hide user presence indicators. */
 }
 
 
@@ -42,7 +30,9 @@ table .ms-formtoolbar {
 .editMode { display: none; }
 .bold { font-weight: bold; }
 .red { color: #FF0000; }
+.darkRed { color: #CC3300; }
 .black { color: #000000; }
+.lightGrey { color: #AAAAAA; }
 
 
 
@@ -84,7 +74,7 @@ table .ms-formtoolbar {
   vertical-align: top;
 }
 .customFormBody {
-  width: 350px;
+  max-width: 516px;
   vertical-align: top;
 }
 .customFormBody input,
@@ -96,6 +86,58 @@ table .ms-formtoolbar {
 }
 .customFormTable {
   margin-top: 8px;
+}
+.customFormTableTabs {
+  margin-bottom: 16px;
+}
+.customFormTab,
+.customFormTabSelected {
+  padding: 8px 16px 8px 16px;
+  text-align: center;
+}
+.customFormTab {
+  background-color: #E1E1E1;
+  font-weight: bold;
+  border-bottom: 1px solid #000000;
+}
+.customFormTab:hover {
+  background-color: #999999;
+  color: #FFFFFF;
+  font-weight: bold;
+  cursor: pointer;
+}
+.customFormTabSelected:hover {
+  background-color: inherit;
+  color: inherit;
+  font-weight: bold;
+  cursor: inherit;
+}
+.customFormTabSelected {
+  background-color: #FFFFFF;
+  font-weight: bold;
+  border-top: 1px solid #000000;
+  border-right: 1px solid #000000;
+  border-bottom: none;
+  border-left: 1px solid #000000;
+}
+.customFormTabDivider {
+  width: 8px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #000000;
+}
+.customFieldButton {
+  font-weight: inherit;
+}
+.customInnerTable {
+  padding: 16px;
+}
+.customInnerTableKeyColumn {
+  vertical-align: top;
+  padding: 0px 8px 8px 0px;
+}
+.customInnerTableValueColumn {
+  vertical-align: top;
+  padding: 0px 8px 8px 8px;
 }
 .customLayoutSectionTitle {
   font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;

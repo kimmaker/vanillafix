@@ -1,6 +1,6 @@
 /**
- * Vanilla Fix for SharePoint (ES6+)
- * Class Definition and Object Instantiation Release 190605
+ * Vanilla Fix for SharePoint (ES5)
+ * Object Instantiation Release 190614
  * Documentation: http://vanillafix.com
  * Repository: https://github.com/kimmaker/vanillafix
  */
@@ -8,166 +8,147 @@
 
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Define the VanillaFix class.
-class VanillaFix {
-  constructor(
-    objectPlatform, // "Online", "2016", "2013", or "2010"
-    objectSiteName,
-    objectListName,
-    objectLocale, // for example: "en-GB"
-    objectRevision,
-    objectIsCustomLayoutUsed, // true or false
-    objectPulseCheck // true or false
-  ) {
-    this._objectDate=new Date();
-    if (objectPulseCheck===undefined) this._pulseCheck=false;
-    else this._pulseCheck=Boolean(objectPulseCheck);
-    if (objectIsCustomLayoutUsed===undefined) this._isCustomLayoutUsed=false;
-    else this._isCustomLayoutUsed=Boolean(objectIsCustomLayoutUsed);
-    if (objectRevision===undefined) this._revision="0";
-    else this._revision=this.getText(objectRevision);
-    if (objectLocale===undefined) this._locale=this.determineLocale();
-    else this._locale=this.determineLocale(objectLocale);
-    if (objectListName===undefined) this._listName=this.determineListName();
-    else this._listName=this.determineListName(objectListName);
-    if (objectSiteName===undefined) this._siteName=this.determineSiteName();
-    else this._siteName=this.determineSiteName(objectSiteName);
-    if (objectPlatform===undefined) this._platform=this.determinePlatform();
-    else this._platform=this.determinePlatform(objectPlatform);
-  } // end of constructor
+// Instantiate a VanillaFix object in ES5-compatible syntax.
+var vf={
+  scriptCompatibility:"ES5",
+  platform:"Online",
+  siteName:"[Site not specified]",
+  listName:"[List not specified]",
+  locale:"en-GB",
+  revision:"0",
+  isCustomLayoutUsed:false,
+  pulseCheck:false,
+  objectDate:new Date(),
+  siteUrl:_spPageContextInfo.webAbsoluteUrl,
+  formUrl:window.location.href,
+  queryString:window.location.search,
+  regExEmail:/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
 
   //=======================================================================
-  // [BASIC PROPERTIES]
-  get scriptCompatibility() { return "ES6+"; }
-  get objectDate() { return this._objectDate; }
-  get platform() { return this._platform; }
-  set platform(v) { this._platform=this.determinePlatform(v) }
-  get siteName() { return this._siteName; }
-  set siteName(v) { this._siteName=this.determineSiteName(v); }
-  get listName() { return this._listName; }
-  set listName(v) { this._listName=this.determineListName(v); }
-  get locale() { return this._locale; }
-  set locale(v) { this._locale=this.determineLocale(v); }
-  get revision() { return this._revision; }
-  set revision(v) { this._revision=this.getText(v); }
-  get isCustomLayoutUsed() { return this._isCustomLayoutUsed; }
-  set isCustomLayoutUsed(v) { this._isCustomLayoutUsed=Boolean(v); }
-  get pulseCheck() { return this._pulseCheck; }
-  set pulseCheck(v) { this._pulseCheck=Boolean(v); }
-  get formUrl() { return window.location.href; }
-  get siteUrl() { return _spPageContextInfo.webAbsoluteUrl; }
-  get queryString() { return window.location.search; }
-  get formMode() {
-    if (this.formUrl.indexOf("DispForm.aspx")>=0) return 0;
-    else if (this.formUrl.indexOf("NewForm.aspx")>=0) return 1;
-    else if (this.formUrl.indexOf("EditForm.aspx")>=0) return 2;
+  // [DERIVED OBJECT PROPERTIES]
+  setDerivedObjectProperties:function() {
+    this.formMode=this.getFormMode(this.formUrl);
+    this.formModeLiteral=this.getFormModeLiteral(this.formMode);
+    this.currentTimeZone=this.getCurrentTimeZone(this.objectDate);
+    this.daysOfWeek=this.getDaysOfWeek(this.locale);
+    this.field=this.getFieldSelector(this.platform);
+    this.fieldValue=this.getFieldValueSelector(this.platform);
+    this.listForm=this.getListForm(this.platform);
+    this.pageRibbon=this.getPageRibbon(this.platform);
+    this.popUpIndicator=this.getPopUpIndicator(this.locale);
+    this.renderingCompleted=this.getRenderingCompleted(this.locale);
+    this.renderingStarted=this.getRenderingStarted(this.locale);
+    this.reqIndicator=this.getReqIndicator(this.locale);
+  },
+  getFieldSelector:function(thePlatform) {
+    switch(thePlatform) {
+      default: return ".ms-standardheader:contains";
+    }
+  },
+  getFieldSelector:function(thePlatform) {
+    switch(thePlatform) {
+      default: return ".ms-standardheader:contains";
+    }
+  },
+  getFieldValueSelector:function(thePlatform) {
+    switch(thePlatform) {
+      default: return ".ms-formbody";
+    }
+  },
+  getFormMode:function(theUrl) {
+    if (theUrl.indexOf("DispForm.aspx")>=0) return 0;
+    else if (theUrl.indexOf("NewForm.aspx")>=0) return 1;
+    else if (theUrl.indexOf("EditForm.aspx")>=0) return 2;
     else return -1;
-  }
-  get formModeLiteral() {
-    if (this.formMode==0) return "DispForm.aspx";
-    else if (this.formMode==1) return "NewForm.aspx";
-    else if (this.formMode==2) return "EditForm.aspx";
+  },
+  getFormModeLiteral:function(theFormMode) {
+    if (theFormMode==0) return "DispForm.aspx";
+    else if (theFormMode==1) return "NewForm.aspx";
+    else if (theFormMode==2) return "EditForm.aspx";
     else return "Unknown";
-  }
-  get currentTimeZone() {
-    return String((String(this.objectDate)).match(/\((.*?)\)/g)
-    ).replace(/[()]/g,"");
-  }
-  get regExEmail() {
-    return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  } // usage: if (vf.regExEmail.test(theTestString)==false) alert("Invalid");
-
-  //=======================================================================
-  // [PLATFORM- OR LOCALE-BASED PROPERTIES]
-  get daysOfWeek() {
-    switch(this.locale) {
+  },
+  getCurrentTimeZone:function(theDate) {
+    return String((String(theDate)).match(/\((.*?)\)/g)).replace(/[()]/g,"");
+  },
+  getDaysOfWeek:function(theLocale) {
+    switch(theLocale) {
       default: return [
         "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
       ];
     }
-  }
-  get months() {
-    switch(this.locale) {
+  },
+  getMonths:function(theLocale) {
+    switch(theLocale) {
       default: return [
         "January","February","March","April","May","June",
         "July","August","September","October","November","December"
       ];
     }
-  }
-  get field() {
-    switch(this.platform) {
-      default: return ".ms-standardheader:contains";
-    }
-  }
-  get fieldValue() {
-    switch(this.platform) {
-      default: return ".ms-formbody";
-    }
-  }
-  get gotPulse() {
-    switch(this.locale) {
+  },
+  getPulse:function(theLocale) {
+    switch(theLocale) {
       default: return "Vanilla Fix is in place."
       +" When you see this alert on all three .aspx forms of the list/library,"
       +" set vf.pulseCheck to false and get on with customisation.";
     }
-  }
-  get listForm() {
-    switch(this.platform) {
+  },
+  getListForm:function(theLocale) {
+    switch(theLocale) {
       default: return "#onetIDListForm";
     }
-  }
-  get pageRibbon() {
-    switch(this.platform) {
+  },
+  getPageRibbon:function(theLocale) {
+    switch(theLocale) {
       default: return "#ribbonBox";
     }
-  }
-  get popUpIndicator() {
-    switch(this.platform) {
+  },
+  getPopUpIndicator:function(theLocale) {
+    switch(theLocale) {
       default: return "IsDlg=1";
     }
-  }
-  get renderingCompleted() {
-    switch(this.locale) {
+  },
+  getRenderingCompleted:function(theLocale) {
+    switch(theLocale) {
       default: return "Vanilla Fix finished rendering the form.";
     }
-  }
-  get renderingStarted() {
-    switch(this.locale) {
+  },
+  getRenderingStarted:function(theLocale) {
+    switch(theLocale) {
       default: return "Vanilla Fix started rendering the form.";
     }
-  }
-  get reqIndicator() {
-    switch(this.locale) {
+  },
+  getReqIndicator:function(theLocale) {
+    switch(theLocale) {
       default: return " *";
     }
-  }
-  get reqSpan() {
+  },
+  getReqSpan:function(thePlatform) {
     var spanClass="editMode";
-    switch(this.platform) {
+    switch(thePlatform) {
       case "2010": spanClass+=" red"; break;
       default: spanClass+=" ms-accentText";
     } // Ensure that .editMode and .red are defined in the stylesheet.
     return String("<span class='"+spanClass+"'>"+this.reqIndicator+"</span>");
-  }
+  },
 
   //=======================================================================
-  // [CLASS METHOD] Append a specified series of characters, such as a space
+  // [OBJECT METHOD] Append a specified series of characters, such as a space
   // followed by an asterisk, to a string if those characters are not already
   // present.
-  appendCharacters(theString,theChars) {
+  appendCharacters:function(theString,theChars) {
     if (theString===undefined) return "";
     if (theChars===undefined) return theString;
     if (theString.lastIndexOf(theChars)!=theString.length-theChars.length) {
       theString+=theChars;
     }
     return theString;
-  } // end of appendCharacters(2)
+  }, // end of appendCharacters(2)
 
   //=======================================================================
-  // [CLASS METHOD] Apply a custom layout to a SharePoint list form.
+  // [OBJECT METHOD] Apply a custom layout to a SharePoint list form.
   // This method is based on ideas from: https://kimmaker.com/ref/501
   // and is further documented at: https://kimmaker.com/doc/211
-  applyCustomLayout() {
+  applyCustomLayout:function() {
     jQuery(".ms-formtable").hide();
     if (this.platform=="Online") jQuery(".ms-WPBody").show();
     jQuery("span.customLayout").each(function() {
@@ -182,12 +163,12 @@ class VanillaFix {
 
     // For attachments, supply the correct selector in the custom layout.
     jQuery("#idAttachmentsRow").contents().appendTo(jQuery("#formAttachments"));
-  } // end of applyCustomLayout()
+  }, // end of applyCustomLayout()
 
   //=======================================================================
-  // [CLASS METHOD] Extract HH:mm from a SharePoint time field. If the input
+  // [OBJECT METHOD] Extract HH:mm from a SharePoint time field. If the input
   // time is in 12-hour format, also add an AM-or-PM indicator.
-  assembleTimeOfDayString(theFieldLabel,theSeparator) {
+  assembleTimeOfDayString:function(theFieldLabel,theSeparator) {
     if (theSeparator===undefined) theSeparator=":";
     if (theFieldLabel===undefined) return "";
     var assembledString="";
@@ -204,10 +185,10 @@ class VanillaFix {
     }
     assembledString=hPortion+theSeparator+mPortion+indicatorAmPm;
     return this.getText(assembledString);
-  } // end of assembleTimeOfDayString(2)
+  }, // end of assembleTimeOfDayString(2)
 
   //=======================================================================
-  // [CLASS METHOD] Convert a conventional date string to YYYY-MM-DD; for
+  // [OBJECT METHOD] Convert a conventional date string to YYYY-MM-DD; for
   // example, "13/07/2019" returns "2019-07-13". An optional second argument
   // can specify what the day-month-year separator in the input string is. If
   // the second argument is not given, the method uses "/". An optional third
@@ -228,7 +209,7 @@ class VanillaFix {
   // ("11.12.2020",".","en-US") returns "2020-11-12"
   // ("11-12-2020","-","en-US") returns "2020-11-12"
   // ("11/12/2020","/","en-US") returns "2020-11-12"
-  convertToSortableDate(theDate,theSeparator,theLocale) {
+  convertToSortableDate:function(theDate,theSeparator,theLocale) {
     var currentYYYY=this.objectDate.getFullYear();
     var defaultYMD=currentYYYY+"-01-01";
     if (theLocale===undefined) theLocale=this.locale;
@@ -246,10 +227,10 @@ class VanillaFix {
     } else strYMD+=(String("-"+arrDate[1]+"-"+arrDate[0]));
     if (isNaN(Date.parse(strYMD))) return defaultYMD;
     else return strYMD;
-  } // end of convertToSortableDate(3)
+  }, // end of convertToSortableDate(3)
 
   //=======================================================================
-  // [CLASS METHOD] Convert a SharePoint time string to a sortable 24-hour
+  // [OBJECT METHOD] Convert a SharePoint time string to a sortable 24-hour
   // equivalent; for example, "11:00 PM" returns "23:00". The method also
   // works for strings that contain variations of English-language AM/PM
   // indications such as "a.m." and "p.m.". The default hour-minute
@@ -281,7 +262,7 @@ class VanillaFix {
   // ("9pm","",":") returns "21:00"
   // ("0900p","") returns "2100"
   // ("930p","",":") returns "21:30"
-  convertToSortableTime(theTime,theSeparatorIn,theSeparatorOut) {
+  convertToSortableTime:function(theTime,theSeparatorIn,theSeparatorOut) {
     if (theSeparatorIn===undefined) theSeparatorIn=":";
     var defaultTime="00"+theSeparatorIn+"00";
     if (theTime===undefined) return defaultTime;
@@ -323,21 +304,21 @@ class VanillaFix {
     if (timeH=="24") timeH="00"; // Change "24:xx" to "00:xx".
     if (theSeparatorOut===undefined) theSeparatorOut=theSeparatorIn;
     return timeH+theSeparatorOut+timeM;
-  } // end of convertToSortableTime(3)
+  }, // end of convertToSortableTime(3)
 
   //=======================================================================
-  // [CLASS METHOD] Decide what to call the current SharePoint list.
-  determineListName(theInput) {
+  // [OBJECT METHOD] Decide what to call the current SharePoint list.
+  determineListName:function(theInput) {
     var defaultName="[List not specified]";
     if (theInput===undefined) return defaultName;
     var name=this.getText(theInput);
     if (name.length<2) return defaultName;
     return name;
-  } // end of determineListName(1)
+  }, // end of determineListName(1)
 
   //=======================================================================
-  // [CLASS METHOD] Extract a locale code (language and region) from input.
-  determineLocale(theLanguageAndRegion) {
+  // [OBJECT METHOD] Extract a locale code (language and region) from input.
+  determineLocale:function(theLanguageAndRegion) {
     var defaultCode="en-GB";
     if (theLanguageAndRegion===undefined) return defaultCode;
     theLanguageAndRegion=this.getText(theLanguageAndRegion);
@@ -349,11 +330,11 @@ class VanillaFix {
     var pattern=/^[a-z]{2}-[A-Z]{2}$/g;
     if (pattern.test(code)==false) return defaultCode;
     else return code;
-  } // end of determineLocale(1)
+  }, // end of determineLocale(1)
 
   //=======================================================================
-  // [CLASS METHOD] Decide which SharePoint platform to target.
-  determinePlatform(theInput) {
+  // [OBJECT METHOD] Decide which SharePoint platform to target.
+  determinePlatform:function(theInput) {
     var defaultPlatform="Online";
     if (theInput===undefined) return defaultPlatform;
     var specifiedPlatform=this.getText(theInput);
@@ -364,50 +345,50 @@ class VanillaFix {
       case "2010": return specifiedPlatform;
       default: return defaultPlatform;
     }
-  } // end of determinePlatform(1)
+  }, // end of determinePlatform(1)
 
   //=======================================================================
-  // [CLASS METHOD] Decide what to call the current SharePoint site.
-  determineSiteName(theInput) {
+  // [OBJECT METHOD] Decide what to call the current SharePoint site.
+  determineSiteName:function(theInput) {
     var defaultName="[Site not specified]";
     if (theInput===undefined) return defaultName;
     var name=this.getText(theInput);
     if (name.length<2) return defaultName;
     return name;
-  } // end of determineSiteName(1)
+  }, // end of determineSiteName(1)
 
   //=======================================================================
-  // [CLASS METHOD] Build a jQuery selector for the label (display name) of
+  // [OBJECT METHOD] Build a jQuery selector for the label (display name) of
   // the specified field.
-  getField(theLabel) {
+  getField:function(theLabel) {
     if (theLabel===undefined) return this.field+"('undefined')";
     switch(this.platform) {
       default: return this.field+"('"+this.getText(theLabel)+"')";
     }
-  } // end of getField(1)
+  }, // end of getField(1)
 
   //=======================================================================
-  // [CLASS METHOD] Sanitise text input.
-  getText(theInput) {
+  // [OBJECT METHOD] Sanitise text input.
+  getText:function(theInput) {
     if ((theInput===null)||(theInput===undefined)) return "";
     return jQuery.trim(theInput).replace(/(\r\n|\n|\r|\t)/gm,String(""));
-  } // end of getText(1)
+  }, // end of getText(1)
 
   //=======================================================================
-  // [CLASS METHOD] Get the specified parameter from the query string. This
+  // [OBJECT METHOD] Get the specified parameter from the query string. This
   // method is based on ideas from: https://kimmaker.com/ref/505
-  getUrlParameter(theName) {
+  getUrlParameter:function(theName) {
     if (theName===undefined) return "";
     theName=theName.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");
     var expression=new RegExp("[\\?&]"+theName+"=([^&#]*)");
     var results=expression.exec(this.queryString);
     return results===null?"":decodeURIComponent(results[1].replace(/\+/g," "));
-  } // end of getUrlParameter(1)
+  }, // end of getUrlParameter(1)
 
   //=======================================================================
-  // [CLASS METHOD] Print the key properties of the instantiated VanillaFix
+  // [OBJECT METHOD] Print the key properties of the instantiated VanillaFix
   // object for logging.
-  produceSignature() {
+  produceSignature:function() {
     return "---\n# Vanilla Fix Object"
     +" ("+this.scriptCompatibility+")"
     +"\n+ Instantiated on: "+this.objectDate.toString()
@@ -426,12 +407,12 @@ class VanillaFix {
       ).replace(/&/g,String("\n  + ")
       ).replace(/=/g,String(": "))
     );
-  } // end of produceSignature()
+  }, // end of produceSignature()
 
   //=======================================================================
-  // [CLASS METHOD] Remove the last occurrence of a specified series of
+  // [OBJECT METHOD] Remove the last occurrence of a specified series of
   // characters, such as a space followed by an asterisk, from a string.
-  removeAppendedCharacters(theString,theChars) {
+  removeAppendedCharacters:function(theString,theChars) {
     if (theString===undefined) return "";
     if (theChars===undefined) return theString;
     if (theString.lastIndexOf(theChars)==theString.length-theChars.length) {
@@ -439,16 +420,10 @@ class VanillaFix {
     }
     return theString;
   } // end of removeAppendedCharacters(2)
-
-  //=======================================================================
-  // [BACKWARD-COMPATIBILITY SUPPORT]
-  setDerivedObjectProperties() {
-    // This has no effect in a VanillaFix object instantiated in ES6+.
-  }
-} // end of class VanillaFix
+};
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Instantiate a VanillaFix object.
-var vf=new VanillaFix();
+// Set derived object properties.
+vf.setDerivedObjectProperties();
 
 
